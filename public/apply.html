@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Apply to become a Local Hero. Get your Houston business featured on monthly EDDM postcards reaching every door in your zipcode.">
+  <title>Become A Local Hero - Apply Now</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="star">&#9733;</span> Local <span>Heroes</span>
+      </a>
+      <div class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </div>
+      <nav id="nav">
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="find.html">Find Local Heroes</a></li>
+          <li><a href="how-it-works.html">How It Works</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="apply.html" class="btn btn-primary active">Become A Local Hero</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page Hero -->
+  <section class="page-hero">
+    <h1>Become A Local Hero</h1>
+    <p>Get your business in front of every household in your Houston neighborhood.</p>
+  </section>
+
+  <!-- Application Form -->
+  <section class="section">
+    <div class="container" style="max-width:700px;">
+      <div style="text-align:center;margin-bottom:40px;">
+        <h2>Application</h2>
+        <div class="star-divider"><span>&#9733;</span></div>
+        <p style="color:var(--color-text-light);">We curate every postcard to feature only the best. Tell us about your business and why Houston needs to know about you.</p>
+      </div>
+
+      <form id="apply-form" enctype="multipart/form-data">
+        <h3 style="margin-bottom:20px;font-size:1.3rem;">Contact Information</h3>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="required">Contact Name</label>
+            <input type="text" name="contact_name" required>
+          </div>
+          <div class="form-group">
+            <label class="required">Email</label>
+            <input type="email" name="email" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="required">Phone</label>
+            <input type="tel" name="phone" required>
+          </div>
+          <div class="form-group">
+            <label>Website</label>
+            <input type="url" name="website" placeholder="https://">
+          </div>
+        </div>
+
+        <h3 style="margin:32px 0 20px;font-size:1.3rem;">Business Details</h3>
+
+        <div class="form-group">
+          <label class="required">Business Name</label>
+          <input type="text" name="business_name" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="required">Business Category</label>
+            <select name="category" required id="apply-category">
+              <option value="">Select a category...</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Years in Business</label>
+            <input type="number" name="years_in_business" min="0" max="100">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="required">Target Zipcode</label>
+          <input type="text" name="zipcode" required maxlength="5" pattern="[0-9]{5}" placeholder="Houston zipcode you want to reach">
+        </div>
+
+        <div class="form-group">
+          <label class="required">Describe Your Business</label>
+          <textarea name="description" required placeholder="What does your business do? What makes you great at it?"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Why Should You Be Featured?</label>
+          <textarea name="why_featured" placeholder="Tell us what makes your business a Local Hero. What do your customers love about you?"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Business Logo</label>
+          <input type="file" name="logo" accept=".jpg,.jpeg,.png,.svg,.webp" style="padding:8px;">
+          <small style="color:var(--color-text-light);display:block;margin-top:4px;">JPG, PNG, SVG, or WebP. Max 5MB.</small>
+        </div>
+
+        <div style="margin-top:32px;">
+          <button type="submit" class="btn btn-primary btn-lg" style="width:100%;">Submit Application</button>
+        </div>
+
+        <div id="apply-message"></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- What Happens Next -->
+  <section class="section section-warm">
+    <div class="container text-center">
+      <h2>What Happens After You Apply?</h2>
+      <div class="star-divider"><span>&#9733;</span></div>
+      <div class="steps" style="margin-top:40px;">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>We Review</h3>
+          <p>Our team reviews your application within 48 hours to ensure quality and fit for your target neighborhood.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Design & Proof</h3>
+          <p>We design your section of the postcard and send you a proof for approval before anything goes to print.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Print & Mail</h3>
+          <p>Your postcard goes out to every door in your zipcode on the next monthly mailing cycle.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h4><span style="color:var(--color-gold);">&#9733;</span> Local Heroes</h4>
+          <p>Houston's premier EDDM postcard advertising platform. We connect the best local businesses with every household in their neighborhood.</p>
+        </div>
+        <div>
+          <h4>For Businesses</h4>
+          <ul class="footer-links">
+            <li><a href="apply.html">Become A Local Hero</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li><a href="how-it-works.html">How It Works</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>For Residents</h4>
+          <ul class="footer-links">
+            <li><a href="find.html">Find Local Heroes</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul class="footer-links">
+            <li>Houston, Texas</li>
+            <li><a href="mailto:hello@localheroes.com">hello@localheroes.com</a></li>
+            <li><a href="tel:+17135550000">(713) 555-0000</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Local Heroes. All rights reserved.</span>
+        <span class="houston-pride">&#9733; Proudly serving Houston, TX &#9733;</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

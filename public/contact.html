@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Contact Local Heroes - Get in touch about EDDM postcard advertising in Houston.">
+  <title>Contact Us - Local Heroes Houston</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="star">&#9733;</span> Local <span>Heroes</span>
+      </a>
+      <div class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </div>
+      <nav id="nav">
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="find.html">Find Local Heroes</a></li>
+          <li><a href="how-it-works.html">How It Works</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html" class="active">Contact</a></li>
+          <li><a href="apply.html" class="btn btn-primary">Become A Local Hero</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page Hero -->
+  <section class="page-hero">
+    <h1>Contact Us</h1>
+    <p>Questions? Ideas? Just want to say howdy? We're all ears.</p>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="section">
+    <div class="container" style="max-width:800px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;">
+
+        <!-- Contact Info -->
+        <div>
+          <h2>Get In Touch</h2>
+          <div class="star-divider" style="justify-content:flex-start;"><span>&#9733;</span></div>
+          <div style="margin-top:24px;">
+            <div style="margin-bottom:24px;">
+              <h4 style="margin-bottom:4px;">Email</h4>
+              <p><a href="mailto:hello@localheroes.com" style="color:var(--color-rust);">hello@localheroes.com</a></p>
+            </div>
+            <div style="margin-bottom:24px;">
+              <h4 style="margin-bottom:4px;">Phone</h4>
+              <p><a href="tel:+17135550000" style="color:var(--color-rust);">(713) 555-0000</a></p>
+            </div>
+            <div style="margin-bottom:24px;">
+              <h4 style="margin-bottom:4px;">Location</h4>
+              <p>Houston, Texas<br><span style="color:var(--color-text-light);">Serving all Houston zipcodes</span></p>
+            </div>
+            <div>
+              <h4 style="margin-bottom:4px;">Business Hours</h4>
+              <p>Monday - Friday: 9am - 6pm CT<br>Saturday: 10am - 2pm CT</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div>
+          <h2>Send a Message</h2>
+          <div class="star-divider" style="justify-content:flex-start;"><span>&#9733;</span></div>
+          <form id="contact-form" style="margin-top:24px;">
+            <div class="form-group">
+              <label class="required">Name</label>
+              <input type="text" name="name" required>
+            </div>
+            <div class="form-group">
+              <label class="required">Email</label>
+              <input type="email" name="email" required>
+            </div>
+            <div class="form-group">
+              <label>Phone</label>
+              <input type="tel" name="phone">
+            </div>
+            <div class="form-group">
+              <label>Subject</label>
+              <select name="subject">
+                <option value="">Select a topic...</option>
+                <option value="Business Inquiry">Business Inquiry</option>
+                <option value="Advertising Question">Advertising Question</option>
+                <option value="General Question">General Question</option>
+                <option value="Partnership">Partnership</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="required">Message</label>
+              <textarea name="message" required placeholder="How can we help?"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;">Send Message</button>
+            <div id="contact-message"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h4><span style="color:var(--color-gold);">&#9733;</span> Local Heroes</h4>
+          <p>Houston's premier EDDM postcard advertising platform. We connect the best local businesses with every household in their neighborhood.</p>
+        </div>
+        <div>
+          <h4>For Businesses</h4>
+          <ul class="footer-links">
+            <li><a href="apply.html">Become A Local Hero</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li><a href="how-it-works.html">How It Works</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>For Residents</h4>
+          <ul class="footer-links">
+            <li><a href="find.html">Find Local Heroes</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul class="footer-links">
+            <li>Houston, Texas</li>
+            <li><a href="mailto:hello@localheroes.com">hello@localheroes.com</a></li>
+            <li><a href="tel:+17135550000">(713) 555-0000</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Local Heroes. All rights reserved.</span>
+        <span class="houston-pride">&#9733; Proudly serving Houston, TX &#9733;</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

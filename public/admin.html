@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Local Heroes</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="star">&#9733;</span> Local <span>Heroes</span>
+      </a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Back to Site</a></li>
+          <li><button class="btn btn-primary" id="logout-btn" style="display:none;">Logout</button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Login -->
+  <div id="admin-login" class="admin-login">
+    <h2>Admin Login</h2>
+    <div class="star-divider"><span>&#9733;</span></div>
+    <form id="login-form" style="margin-top:24px;">
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" id="admin-password" required>
+      </div>
+      <button type="submit" class="btn btn-navy" style="width:100%;">Login</button>
+      <div id="login-message"></div>
+    </form>
+  </div>
+
+  <!-- Admin Dashboard -->
+  <div id="admin-dashboard" class="admin-layout" style="display:none;">
+    <div class="container">
+      <h1 style="margin-bottom:24px;">Admin Dashboard</h1>
+
+      <!-- Tabs -->
+      <div class="admin-tabs">
+        <button class="admin-tab active" data-tab="applications">Applications</button>
+        <button class="admin-tab" data-tab="businesses">Businesses</button>
+        <button class="admin-tab" data-tab="messages">Messages</button>
+        <button class="admin-tab" data-tab="zipcodes">Zipcodes</button>
+      </div>
+
+      <!-- Applications Tab -->
+      <div id="tab-applications" class="admin-tab-content">
+        <div style="margin-bottom:16px;display:flex;gap:8px;">
+          <button class="btn btn-navy" data-filter="pending" style="padding:8px 16px;font-size:0.85rem;">Pending</button>
+          <button class="btn btn-secondary" data-filter="approved" style="padding:8px 16px;font-size:0.85rem;">Approved</button>
+          <button class="btn btn-primary" data-filter="rejected" style="padding:8px 16px;font-size:0.85rem;">Rejected</button>
+          <button class="btn btn-outline" style="padding:8px 16px;font-size:0.85rem;color:var(--color-navy);border-color:var(--color-border);" data-filter="all">All</button>
+        </div>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Business</th>
+              <th>Contact</th>
+              <th>Category</th>
+              <th>Zipcode</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="applications-table"></tbody>
+        </table>
+      </div>
+
+      <!-- Businesses Tab -->
+      <div id="tab-businesses" class="admin-tab-content" style="display:none;">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Zipcode</th>
+              <th>Featured</th>
+              <th>Active</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="businesses-table"></tbody>
+        </table>
+      </div>
+
+      <!-- Messages Tab -->
+      <div id="tab-messages" class="admin-tab-content" style="display:none;">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Subject</th>
+              <th>Message</th>
+              <th>Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="messages-table"></tbody>
+        </table>
+      </div>
+
+      <!-- Zipcodes Tab -->
+      <div id="tab-zipcodes" class="admin-tab-content" style="display:none;">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Zipcode</th>
+              <th>Neighborhood</th>
+              <th>Businesses</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="zipcodes-table"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>
