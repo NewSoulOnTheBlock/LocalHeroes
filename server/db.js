@@ -68,6 +68,44 @@ db.exec(`
     read INTEGER DEFAULT 0,
     created_at TEXT DEFAULT (datetime('now'))
   );
+
+  CREATE TABLE IF NOT EXISTS crm_contacts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    business_name TEXT NOT NULL,
+    contact_name TEXT,
+    phone TEXT,
+    email TEXT,
+    website TEXT,
+    address TEXT,
+    zipcode TEXT,
+    category TEXT,
+    source TEXT DEFAULT 'manual',
+    status TEXT DEFAULT 'new',
+    notes TEXT,
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now'))
+  );
+
+  CREATE TABLE IF NOT EXISTS crm_calls (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    contact_id INTEGER NOT NULL REFERENCES crm_contacts(id) ON DELETE CASCADE,
+    call_date TEXT DEFAULT (datetime('now')),
+    duration_minutes INTEGER,
+    outcome TEXT,
+    notes TEXT,
+    created_at TEXT DEFAULT (datetime('now'))
+  );
+
+  CREATE TABLE IF NOT EXISTS crm_followups (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    contact_id INTEGER NOT NULL REFERENCES crm_contacts(id) ON DELETE CASCADE,
+    followup_date TEXT NOT NULL,
+    followup_type TEXT DEFAULT 'call',
+    reason TEXT,
+    completed INTEGER DEFAULT 0,
+    completed_at TEXT,
+    created_at TEXT DEFAULT (datetime('now'))
+  );
 `);
 
 // Seed default categories

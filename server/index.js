@@ -21,6 +21,7 @@ app.use('/api/businesses', require('./routes/businesses'));
 app.use('/api/applications', require('./routes/applications'));
 app.use('/api/contact', require('./routes/contact'));
 app.use('/api/admin', require('./routes/admin'));
+app.use('/api/crm', require('./routes/crm'));
 
 // Zipcodes public endpoint
 const db = require('./db');
