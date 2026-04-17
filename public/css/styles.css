@@ -961,6 +961,271 @@ img { max-width: 100%; height: auto; }
   color: rgba(255,255,255,0.5);
 }
 
+/* === PIPELINE KANBAN === */
+.pipeline-board {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  overflow-x: auto;
+  min-height: 500px;
+}
+
+.pipeline-col {
+  background: var(--color-bg-warm);
+  border-radius: var(--radius);
+  padding: 0;
+  min-width: 180px;
+}
+
+.pipeline-col-header {
+  padding: 12px 16px;
+  border-top: 4px solid var(--color-navy);
+  border-radius: var(--radius) var(--radius) 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--color-white);
+}
+
+.pipeline-col-header h4 {
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.pipeline-count {
+  background: var(--color-bg-warm);
+  color: var(--color-text-light);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.pipeline-cards {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 100px;
+}
+
+.pipeline-card {
+  background: var(--color-white);
+  border-radius: 6px;
+  padding: 12px;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: box-shadow 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.pipeline-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.pipeline-card .pc-name {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--color-navy);
+  margin-bottom: 4px;
+}
+
+.pipeline-card .pc-meta {
+  font-size: 0.75rem;
+  color: var(--color-text-light);
+}
+
+.pipeline-card .pc-actions {
+  margin-top: 8px;
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.pipeline-card .pc-actions button {
+  padding: 2px 8px;
+  font-size: 0.7rem;
+}
+
+.pipeline-card.drag-over {
+  border-left-color: var(--color-gold);
+}
+
+/* === CALL LIST === */
+.calllist-card {
+  background: var(--color-white);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 8px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  border-left: 4px solid var(--color-border);
+}
+
+.calllist-card.priority-1 { border-left-color: var(--color-rust); }
+.calllist-card.priority-2 { border-left-color: var(--color-gold); }
+.calllist-card.priority-3 { border-left-color: #7B1FA2; }
+.calllist-card.priority-4 { border-left-color: #1565C0; }
+.calllist-card.priority-5 { border-left-color: var(--color-text-light); }
+
+.calllist-info { flex: 1; }
+.calllist-info .cl-name { font-weight: 700; color: var(--color-navy); font-size: 1rem; }
+.calllist-info .cl-meta { font-size: 0.85rem; color: var(--color-text-light); margin-top: 2px; }
+.calllist-info .cl-reason { font-size: 0.85rem; margin-top: 4px; }
+
+.calllist-phone {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+
+.calllist-phone a { color: var(--color-rust); font-weight: 600; }
+
+/* === CALENDAR === */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: var(--color-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.cal-header {
+  background: var(--color-navy);
+  color: var(--color-white);
+  text-align: center;
+  padding: 10px 4px;
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cal-day {
+  background: var(--color-white);
+  min-height: 100px;
+  padding: 6px;
+  vertical-align: top;
+}
+
+.cal-day.other-month {
+  background: var(--color-bg-warm);
+  opacity: 0.5;
+}
+
+.cal-day.today {
+  background: #FFFDE7;
+}
+
+.cal-day-num {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--color-navy);
+  margin-bottom: 4px;
+}
+
+.cal-event {
+  font-size: 0.7rem;
+  padding: 3px 6px;
+  margin-bottom: 2px;
+  border-radius: 3px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cal-event.pending { background: #E3F2FD; color: #1565C0; }
+.cal-event.completed { background: #E8F5E9; color: #2E7D32; text-decoration: line-through; }
+.cal-event.overdue { background: #FDEDEC; color: #C0392B; }
+
+/* === ACTIVITY TIMELINE === */
+.activity-timeline {
+  position: relative;
+  padding-left: 24px;
+}
+
+.activity-timeline::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-border);
+}
+
+.activity-item {
+  position: relative;
+  padding: 8px 0 16px;
+}
+
+.activity-item::before {
+  content: '';
+  position: absolute;
+  left: -20px;
+  top: 12px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-navy);
+  border: 2px solid var(--color-white);
+}
+
+.activity-item.type-call::before { background: var(--color-success); }
+.activity-item.type-email::before { background: #1565C0; }
+.activity-item.type-note::before { background: var(--color-gold); }
+.activity-item.type-status::before { background: #7B1FA2; }
+.activity-item.type-followup::before { background: var(--color-rust); }
+
+.activity-item .ai-time {
+  font-size: 0.75rem;
+  color: var(--color-text-light);
+}
+
+.activity-item .ai-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-navy);
+}
+
+.activity-item .ai-detail {
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+  margin-top: 2px;
+}
+
+/* === EMAIL TEMPLATE LIST === */
+.template-item {
+  padding: 12px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.template-item:hover, .template-item.active {
+  border-color: var(--color-navy);
+  background: var(--color-bg-warm);
+}
+
+.template-item .ti-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-navy);
+}
+
+.template-item .ti-subject {
+  font-size: 0.8rem;
+  color: var(--color-text-light);
+  margin-top: 2px;
+}
+
 /* === RESPONSIVE === */
 @media (max-width: 768px) {
   h1 { font-size: 2.5rem; }

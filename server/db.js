@@ -106,7 +106,56 @@ db.exec(`
     completed_at TEXT,
     created_at TEXT DEFAULT (datetime('now'))
   );
+
+  CREATE TABLE IF NOT EXISTS crm_activities (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    contact_id INTEGER NOT NULL REFERENCES crm_contacts(id) ON DELETE CASCADE,
+    type TEXT NOT NULL,
+    title TEXT NOT NULL,
+    detail TEXT,
+    metadata TEXT,
+    created_at TEXT DEFAULT (datetime('now'))
+  );
+
+  CREATE TABLE IF NOT EXISTS crm_email_templates (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE NOT NULL,
+    subject TEXT NOT NULL,
+    body TEXT NOT NULL,
+    created_at TEXT DEFAULT (datetime('now'))
+  );
+
+  CREATE TABLE IF NOT EXISTS crm_emails_sent (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    contact_id INTEGER NOT NULL REFERENCES crm_contacts(id) ON DELETE CASCADE,
+    template_id INTEGER REFERENCES crm_email_templates(id),
+    to_email TEXT NOT NULL,
+    subject TEXT NOT NULL,
+    body TEXT NOT NULL,
+    created_at TEXT DEFAULT (datetime('now'))
+  );
 `);
+
+// Seed default email templates
+const defaultTemplates = [
+  ['Introduction', 'Local Heroes - Get Your Business on Every Door in {{zipcode}}',
+    `Hi {{contact_name}},\n\nI'm reaching out from Local Heroes — we help Houston's best local businesses get in front of every household in their neighborhood through premium EDDM postcards.\n\nI noticed {{business_name}} in the {{zipcode}} area and think your business would be a perfect fit for our next mailing.\n\nHere's how it works:\n• We design a beautiful postcard featuring your business\n• USPS delivers it to EVERY door in your target zipcode\n• You get thousands of impressions for one flat monthly rate of $299\n\nWould you be open to a quick 5-minute call this week? I'd love to show you what our postcards look like and how other local businesses are seeing results.\n\nBest,\nLocal Heroes Team\n(713) 555-0000\nlocalheroes.com`],
+  ['Pricing Follow-Up', 'Pricing Details - Local Heroes EDDM Postcards',
+    `Hi {{contact_name}},\n\nGreat speaking with you! As promised, here are the details on Local Heroes:\n\n📬 Local Hero Plan — $299/month per zipcode\n\nWhat's included:\n• Featured on monthly EDDM postcard\n• Professional design (we handle everything)\n• Premium glossy card stock printing\n• USPS Every Door Direct Mail delivery\n• Listed on our LocalHeroes.com directory\n• Proof approval before printing\n• Cancel anytime — no contracts\n\nEach postcard reaches every household in your target zipcode (typically 2,000-8,000 homes). You share space with 4-6 other curated local businesses.\n\nWant to lock in a spot on next month's mailing? Just reply to this email or call us at (713) 555-0000.\n\nBest,\nLocal Heroes Team`],
+  ['Follow-Up Check-In', 'Checking In - Local Heroes',
+    `Hi {{contact_name}},\n\nJust checking in on our conversation about getting {{business_name}} featured on Local Heroes postcards in the {{zipcode}} area.\n\nI know things get busy — just wanted to make sure this didn't fall off your radar. Our next mailing cycle is coming up and I'd love to include you.\n\nAny questions I can answer? Happy to jump on a quick call whenever works for you.\n\nBest,\nLocal Heroes Team\n(713) 555-0000`],
+  ['Post-Sign Welcome', 'Welcome to Local Heroes! 🌟',
+    `Hi {{contact_name}},\n\nWelcome to Local Heroes! We're thrilled to have {{business_name}} on the team.\n\nHere's what happens next:\n\n1. Our design team will reach out within 48 hours to get your logo, photos, and the info you want featured\n2. We'll send you a proof to review and approve\n3. Your postcard goes to print and hits every door in {{zipcode}} on the next mailing cycle\n\nYou're also now listed on our LocalHeroes.com directory where residents can find you by zipcode.\n\nIf you need anything at all, just reply to this email or call (713) 555-0000.\n\nProud to have you as a Local Hero,\nThe Local Heroes Team`],
+  ['Re-Engagement', 'Still interested? Special offer for {{business_name}}',
+    `Hi {{contact_name}},\n\nIt's been a little while since we chatted about Local Heroes, and I wanted to reach out one more time.\n\nWe're about to finalize the postcard for the {{zipcode}} area, and there's still a spot open. I'd hate for {{business_name}} to miss out.\n\nIf timing was the issue before, I totally get it. But if you're ready to give it a shot, we'd love to have you.\n\nJust reply "I'm in" and we'll get you set up.\n\nBest,\nLocal Heroes Team\n(713) 555-0000`]
+];
+
+const insertTemplate = db.prepare(
+  'INSERT OR IGNORE INTO crm_email_templates (name, subject, body) VALUES (?, ?, ?)'
+);
+for (const [name, subject, body] of defaultTemplates) {
+  insertTemplate.run(name, subject, body);
+}
 
 // Seed default categories
 const categories = [

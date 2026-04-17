@@ -45,8 +45,12 @@
       <!-- Tabs -->
       <div class="admin-tabs">
         <button class="admin-tab active" data-tab="crm-dashboard">CRM</button>
+        <button class="admin-tab" data-tab="crm-pipeline">Pipeline</button>
+        <button class="admin-tab" data-tab="crm-calllist">Call List</button>
         <button class="admin-tab" data-tab="crm-contacts">Contacts</button>
         <button class="admin-tab" data-tab="crm-followups">Follow-Ups</button>
+        <button class="admin-tab" data-tab="crm-calendar">Calendar</button>
+        <button class="admin-tab" data-tab="crm-emails">Email</button>
         <button class="admin-tab" data-tab="applications">Applications</button>
         <button class="admin-tab" data-tab="businesses">Businesses</button>
         <button class="admin-tab" data-tab="messages">Messages</button>
@@ -86,6 +90,97 @@
           </thead>
           <tbody id="crm-today-table"></tbody>
         </table>
+      </div>
+
+      <!-- CRM Pipeline/Kanban Tab -->
+      <div id="tab-crm-pipeline" class="admin-tab-content" style="display:none;">
+        <div class="pipeline-board" id="pipeline-board">
+          <div class="pipeline-col" data-status="new">
+            <div class="pipeline-col-header" style="border-color:#1565C0;">
+              <h4>New</h4><span class="pipeline-count" id="count-new">0</span>
+            </div>
+            <div class="pipeline-cards" id="pipe-new"></div>
+          </div>
+          <div class="pipeline-col" data-status="contacted">
+            <div class="pipeline-col-header" style="border-color:#856404;">
+              <h4>Contacted</h4><span class="pipeline-count" id="count-contacted">0</span>
+            </div>
+            <div class="pipeline-cards" id="pipe-contacted"></div>
+          </div>
+          <div class="pipeline-col" data-status="interested">
+            <div class="pipeline-col-header" style="border-color:#2E7D32;">
+              <h4>Interested</h4><span class="pipeline-count" id="count-interested">0</span>
+            </div>
+            <div class="pipeline-cards" id="pipe-interested"></div>
+          </div>
+          <div class="pipeline-col" data-status="negotiating">
+            <div class="pipeline-col-header" style="border-color:#7B1FA2;">
+              <h4>Negotiating</h4><span class="pipeline-count" id="count-negotiating">0</span>
+            </div>
+            <div class="pipeline-cards" id="pipe-negotiating"></div>
+          </div>
+          <div class="pipeline-col" data-status="signed">
+            <div class="pipeline-col-header" style="border-color:#155724;">
+              <h4>Signed</h4><span class="pipeline-count" id="count-signed">0</span>
+            </div>
+            <div class="pipeline-cards" id="pipe-signed"></div>
+          </div>
+          <div class="pipeline-col" data-status="not_interested">
+            <div class="pipeline-col-header" style="border-color:#721C24;">
+              <h4>Lost</h4><span class="pipeline-count" id="count-not_interested">0</span>
+            </div>
+            <div class="pipeline-cards" id="pipe-not_interested"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CRM Daily Call List Tab -->
+      <div id="tab-crm-calllist" class="admin-tab-content" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <h3>Today's Call Queue</h3>
+          <button class="btn btn-navy" onclick="loadCallList()" style="padding:8px 16px;font-size:0.85rem;">Refresh</button>
+        </div>
+        <div id="calllist-container"></div>
+      </div>
+
+      <!-- CRM Calendar Tab -->
+      <div id="tab-crm-calendar" class="admin-tab-content" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <button class="btn btn-navy" id="cal-prev" style="padding:8px 16px;">&larr; Prev</button>
+          <h3 id="cal-title"></h3>
+          <button class="btn btn-navy" id="cal-next" style="padding:8px 16px;">Next &rarr;</button>
+        </div>
+        <div class="calendar-grid" id="calendar-grid"></div>
+      </div>
+
+      <!-- CRM Email Tab -->
+      <div id="tab-crm-emails" class="admin-tab-content" style="display:none;">
+        <div style="display:grid;grid-template-columns:280px 1fr;gap:24px;">
+          <div>
+            <h3 style="margin-bottom:16px;">Templates</h3>
+            <div id="template-list"></div>
+          </div>
+          <div>
+            <h3 style="margin-bottom:16px;">Compose</h3>
+            <form id="email-compose-form">
+              <div class="form-group">
+                <label>To (select contact)</label>
+                <select name="contact_id" id="email-contact-select" required style="width:100%;padding:10px;border:2px solid var(--color-border);border-radius:var(--radius);font-family:var(--font-body);"></select>
+              </div>
+              <input type="hidden" name="template_id" id="email-template-id">
+              <div class="form-group">
+                <label>Subject</label>
+                <input type="text" name="subject" id="email-subject" required>
+              </div>
+              <div class="form-group">
+                <label>Body</label>
+                <textarea name="body" id="email-body" required style="min-height:250px;font-family:var(--font-body);white-space:pre-wrap;"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary" style="width:100%;">Send Email</button>
+              <div id="email-send-msg"></div>
+            </form>
+          </div>
+        </div>
       </div>
 
       <!-- CRM Contacts Tab -->
