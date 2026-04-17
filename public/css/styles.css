@@ -120,7 +120,7 @@ img { max-width: 100%; height: auto; }
 }
 
 .section-warm {
-  background: var(--color-bg-warm);
+  background: transparent;
 }
 
 .text-center { text-align: center; }
