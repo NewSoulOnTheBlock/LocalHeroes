@@ -26,6 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const savedToken = sessionStorage.getItem('lh_token') || localStorage.getItem('lh_token');
   const savedUser  = sessionStorage.getItem('lh_user')  || localStorage.getItem('lh_user');
   if (savedToken && savedUser) { authToken = savedToken; currentUser = JSON.parse(savedUser); showDashboard(); }
+  else if (location.hash === '#signup') {
+    // Jump straight to signup when linked via /admin.html#signup (Sales Staff button)
+    loginForm.style.display = 'none'; signupForm.style.display = 'block';
+    document.getElementById('auth-title').textContent = 'Create Salesperson Account';
+  }
 
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
