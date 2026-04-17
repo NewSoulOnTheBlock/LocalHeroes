@@ -257,6 +257,14 @@ img { max-width: 100%; height: auto; }
   font-size: 1.4rem;
 }
 
+.logo img.logo-img {
+  height: 40px;
+  width: auto;
+  display: inline-block;
+  vertical-align: middle;
+  filter: invert(1);
+}
+
 .logo span {
   color: var(--color-gold);
 }
