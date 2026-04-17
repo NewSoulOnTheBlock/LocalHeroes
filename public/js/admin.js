@@ -92,6 +92,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (tab.dataset.tab === 'crm-calllist') loadCallList();
       if (tab.dataset.tab === 'crm-calendar') loadCalendar();
       if (tab.dataset.tab === 'crm-emails') loadEmailTab();
+      if (tab.dataset.tab === 'territories') loadTerritories();
+      if (tab.dataset.tab === 'commissions') loadCommissions();
+      if (tab.dataset.tab === 'referrals') loadReferralsAdmin();
     });
   });
 
@@ -624,6 +627,147 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('zipcodes-table').innerHTML = data.map(z => `<tr><td><strong>${esc(z.zipcode)}</strong></td><td>${esc(z.neighborhood||'-')}</td>
       <td>${z.business_count}</td><td>${z.active?'<span class="badge badge-approved">Active</span>':'<span class="badge badge-rejected">Inactive</span>'}</td></tr>`).join('');
   }
+
+  // ==================== TERRITORIES / COMMISSIONS / REFERRALS ====================
+  let _zipsCache = null, _repsCache = null;
+  async function loadZipOptions(selectEl) {
+    if (!_zipsCache) _zipsCache = await adminFetch('/api/zipcodes') || [];
+    selectEl.innerHTML = '<option value="">— Select zipcode —</option>' +
+      _zipsCache.map(z => `<option value="${esc(z.zipcode)}">${esc(z.zipcode)} — ${esc(z.neighborhood||'')}</option>`).join('');
+  }
+  async function loadRepOptions(selectEl) {
+    if (!_repsCache) _repsCache = await adminFetch('/api/auth/salespeople') || [];
+    selectEl.innerHTML = '<option value="">— Select salesperson —</option>' +
+      _repsCache.map(r => `<option value="${r.id}">${esc(r.full_name || r.username)} (${esc(r.username)})</option>`).join('');
+  }
+
+  async function loadTerritories() {
+    await loadZipOptions(document.getElementById('territory-zip'));
+    await loadRepOptions(document.getElementById('territory-rep'));
+    const data = await adminFetch('/api/territories'); if (!data) return;
+    const tbody = document.getElementById('territories-table');
+    if (!data.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#888;padding:20px;">No territories assigned yet.</td></tr>'; return; }
+    tbody.innerHTML = data.map(t => `<tr>
+      <td><strong>${esc(t.zipcode)}</strong></td>
+      <td>${esc(t.neighborhood||'-')}</td>
+      <td>${esc(t.full_name || t.username)}</td>
+      <td>${t.assigned_at ? new Date(t.assigned_at).toLocaleDateString() : '-'}</td>
+      <td><button class="btn btn-sm btn-outline" onclick="removeTerritory(${t.id})">Remove</button></td>
+    </tr>`).join('');
+  }
+  window.removeTerritory = async function(id) {
+    if (!confirm('Remove this territory assignment?')) return;
+    await adminFetch('/api/territories/' + id, { method: 'DELETE' });
+    loadTerritories();
+  };
+  document.getElementById('territory-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const zipOpt = document.getElementById('territory-zip').selectedOptions[0];
+    const body = {
+      salesperson_id: parseInt(fd.get('salesperson_id')),
+      zipcode: zipOpt ? zipOpt.value : null
+    };
+    const msg = document.getElementById('territory-msg');
+    const res = await adminFetch('/api/territories', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+    });
+    if (res && res.success !== false) {
+      msg.innerHTML = '<div class="form-message success">Territory assigned.</div>';
+      e.target.reset();
+      loadTerritories();
+    } else {
+      msg.innerHTML = `<div class="form-message error">${esc((res && res.error) || 'Failed to assign.')}</div>`;
+    }
+  });
+
+  async function loadCommissions() {
+    await loadRepOptions(document.getElementById('commission-rep'));
+    const [list, summary] = await Promise.all([
+      adminFetch('/api/territories/commissions'),
+      adminFetch('/api/territories/commissions/summary')
+    ]);
+    if (!list) return;
+    const tbody = document.getElementById('commissions-table');
+    if (!list.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#888;padding:20px;">No commissions logged yet.</td></tr>'; }
+    else {
+      tbody.innerHTML = list.map(c => `<tr>
+        <td>${new Date(c.created_at).toLocaleDateString()}</td>
+        <td>${esc(c.full_name || c.username)}</td>
+        <td>${c.application_id || '-'}</td>
+        <td><strong>$${((c.amount_cents||0)/100).toFixed(2)}</strong></td>
+        <td>${c.status === 'paid'
+          ? '<span class="badge badge-approved">Paid</span>'
+          : '<span class="badge badge-pending">Pending</span>'}</td>
+        <td>${esc(c.notes || '-')}</td>
+        <td>${c.status === 'paid' ? '' : `<button class="btn btn-sm btn-primary" onclick="markCommissionPaid(${c.id})">Mark Paid</button>`}</td>
+      </tr>`).join('');
+    }
+  }
+  window.markCommissionPaid = async function(id) {
+    await adminFetch('/api/territories/commissions/' + id, {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'paid' })
+    });
+    loadCommissions();
+  };
+  document.getElementById('commission-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const body = {
+      salesperson_id: parseInt(fd.get('salesperson_id')),
+      application_id: fd.get('application_id') ? parseInt(fd.get('application_id')) : null,
+      amount_cents: Math.round(parseFloat(fd.get('amount_dollars')) * 100),
+      notes: fd.get('note') || null
+    };
+    const msg = document.getElementById('commission-msg');
+    const res = await adminFetch('/api/territories/commissions', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+    });
+    if (res && res.id) {
+      msg.innerHTML = '<div class="form-message success">Commission added.</div>';
+      e.target.reset();
+      loadCommissions();
+    } else {
+      msg.innerHTML = `<div class="form-message error">${esc((res && res.error) || 'Failed to create.')}</div>`;
+    }
+  });
+
+  async function loadReferralsAdmin() {
+    const data = await adminFetch('/api/referrals/admin/all'); if (!data) return;
+    const tbody = document.getElementById('referrals-table');
+    if (!data.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#888;padding:20px;">No referral codes yet.</td></tr>'; return; }
+    tbody.innerHTML = data.map(r => `<tr>
+      <td><strong>${esc(r.code)}</strong></td>
+      <td>${esc(r.owner_username || r.owner_email || '-')}</td>
+      <td>$${((r.discount_cents||0)/100).toFixed(0)}</td>
+      <td>${r.times_used || 0}</td>
+      <td>${new Date(r.created_at).toLocaleDateString()}</td>
+      <td>${r.active
+        ? '<span class="badge badge-approved">Active</span>'
+        : '<span class="badge badge-rejected">Inactive</span>'}</td>
+    </tr>`).join('');
+  }
+  document.getElementById('referral-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const body = {
+      owner_email: fd.get('owner_email') || null,
+      discount_cents: Math.round(parseFloat(fd.get('discount_dollars')) * 100),
+      reward_cents: Math.round(parseFloat(fd.get('discount_dollars')) * 100)
+    };
+    const msg = document.getElementById('referral-msg');
+    const res = await adminFetch('/api/referrals/generate', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+    });
+    if (res && res.code) {
+      msg.innerHTML = `<div class="form-message success">Generated code: <strong>${esc(res.code)}</strong></div>`;
+      e.target.reset();
+      loadReferralsAdmin();
+    } else {
+      msg.innerHTML = `<div class="form-message error">${esc((res && res.error) || 'Failed to generate.')}</div>`;
+    }
+  });
 
   // ==================== HELPERS ====================
   async function adminFetch(url, options = {}) {

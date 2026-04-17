@@ -77,6 +77,9 @@
         <button class="admin-tab admin-only" data-tab="businesses" style="display:none;">Businesses</button>
         <button class="admin-tab admin-only" data-tab="messages" style="display:none;">Messages</button>
         <button class="admin-tab admin-only" data-tab="zipcodes" style="display:none;">Zipcodes</button>
+        <button class="admin-tab admin-only" data-tab="territories" style="display:none;">Territories</button>
+        <button class="admin-tab admin-only" data-tab="commissions" style="display:none;">Commissions</button>
+        <button class="admin-tab admin-only" data-tab="referrals" style="display:none;">Referrals</button>
       </div>
 
       <!-- CRM Dashboard Tab -->
@@ -334,6 +337,89 @@
             </tr>
           </thead>
           <tbody id="zipcodes-table"></tbody>
+        </table>
+      </div>
+
+      <!-- Territories tab -->
+      <div id="tab-territories" class="admin-tab-content" style="display:none;">
+        <div class="admin-section" style="margin-bottom:24px;">
+          <h3>Assign Zipcode to Sales Rep</h3>
+          <form id="territory-form" style="display:flex;gap:12px;align-items:end;flex-wrap:wrap;">
+            <div class="form-group" style="flex:1;min-width:160px;">
+              <label>Zipcode</label>
+              <select name="zipcode_id" id="territory-zip" required></select>
+            </div>
+            <div class="form-group" style="flex:1;min-width:160px;">
+              <label>Salesperson</label>
+              <select name="salesperson_id" id="territory-rep" required></select>
+            </div>
+            <button type="submit" class="btn btn-primary">Assign</button>
+          </form>
+          <div id="territory-msg" style="margin-top:10px;"></div>
+        </div>
+        <table class="admin-table">
+          <thead>
+            <tr><th>Zip</th><th>Neighborhood</th><th>Rep</th><th>Assigned</th><th></th></tr>
+          </thead>
+          <tbody id="territories-table"></tbody>
+        </table>
+      </div>
+
+      <!-- Commissions tab -->
+      <div id="tab-commissions" class="admin-tab-content" style="display:none;">
+        <div class="admin-section" style="margin-bottom:24px;">
+          <h3>Create Commission</h3>
+          <form id="commission-form" style="display:flex;gap:12px;align-items:end;flex-wrap:wrap;">
+            <div class="form-group" style="flex:1;min-width:160px;">
+              <label>Salesperson</label>
+              <select name="salesperson_id" id="commission-rep" required></select>
+            </div>
+            <div class="form-group" style="flex:1;min-width:160px;">
+              <label>Application ID <small style="color:#888;">(optional)</small></label>
+              <input type="number" name="application_id">
+            </div>
+            <div class="form-group" style="flex:1;min-width:140px;">
+              <label>Amount ($)</label>
+              <input type="number" step="0.01" name="amount_dollars" required>
+            </div>
+            <div class="form-group" style="flex:2;min-width:200px;">
+              <label>Note</label>
+              <input type="text" name="note" placeholder="e.g. Jan 2026 postcard - 77008">
+            </div>
+            <button type="submit" class="btn btn-primary">Add</button>
+          </form>
+          <div id="commission-msg" style="margin-top:10px;"></div>
+        </div>
+        <table class="admin-table">
+          <thead>
+            <tr><th>Date</th><th>Rep</th><th>App</th><th>Amount</th><th>Status</th><th>Note</th><th></th></tr>
+          </thead>
+          <tbody id="commissions-table"></tbody>
+        </table>
+      </div>
+
+      <!-- Referrals tab -->
+      <div id="tab-referrals" class="admin-tab-content" style="display:none;">
+        <div class="admin-section" style="margin-bottom:24px;">
+          <h3>Generate Referral Code</h3>
+          <form id="referral-form" style="display:flex;gap:12px;align-items:end;flex-wrap:wrap;">
+            <div class="form-group" style="flex:1;min-width:180px;">
+              <label>Owner Email <small style="color:#888;">(optional)</small></label>
+              <input type="email" name="owner_email" placeholder="promoter@example.com">
+            </div>
+            <div class="form-group" style="flex:1;min-width:140px;">
+              <label>Discount ($)</label>
+              <input type="number" step="0.01" name="discount_dollars" value="50" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Generate</button>
+          </form>
+          <div id="referral-msg" style="margin-top:10px;"></div>
+        </div>
+        <table class="admin-table">
+          <thead>
+            <tr><th>Code</th><th>Owner</th><th>Discount</th><th>Uses</th><th>Created</th><th>Status</th></tr>
+          </thead>
+          <tbody id="referrals-table"></tbody>
         </table>
       </div>
     </div>
