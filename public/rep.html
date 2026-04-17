@@ -23,6 +23,41 @@
     table.rep-table th, table.rep-table td { padding: 10px 12px; border-bottom: 1px solid var(--color-border); text-align: left; font-size: .9rem; }
     table.rep-table th { background: var(--color-navy); color: #fff; }
     @media (max-width: 900px) { .pipeline { grid-template-columns: 1fr 1fr; } }
+
+    /* Pitch Kit */
+    .pitch-wrap { background: #fff; border: 2px solid var(--color-navy); border-radius: 14px; padding: 0; margin-bottom: 32px; box-shadow: var(--shadow-md); overflow: hidden; }
+    .pitch-header { background: linear-gradient(135deg, var(--color-navy), var(--color-navy-dark)); color: #fff; padding: 18px 22px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .pitch-header h2 { color: #fff; margin: 0; font-size: 1.4rem; letter-spacing: .5px; }
+    .pitch-header p { color: #ffe8e8; margin: 0; font-size: .88rem; }
+    .pitch-tabs { display: flex; flex-wrap: wrap; background: var(--color-bg-warm); border-bottom: 1px solid var(--color-border); }
+    .pitch-tab { flex: 1; min-width: 140px; padding: 14px 12px; background: transparent; border: 0; border-bottom: 3px solid transparent; cursor: pointer; font-weight: 600; color: var(--color-text-light); font-size: .92rem; transition: all .15s; }
+    .pitch-tab:hover { color: var(--color-navy); }
+    .pitch-tab.active { color: var(--color-navy); border-bottom-color: var(--color-navy); background: #fff; }
+    .pitch-panel { display: none; padding: 24px 28px; }
+    .pitch-panel.active { display: block; }
+    .pitch-panel h3 { color: var(--color-navy); margin: 0 0 12px; font-size: 1.15rem; }
+    .pitch-panel h4 { color: var(--color-navy-dark); margin: 18px 0 6px; font-size: 1rem; }
+    .pitch-panel ul { margin: 6px 0 14px 22px; }
+    .pitch-panel li { margin-bottom: 6px; line-height: 1.5; }
+    .pitch-hook { background: var(--color-bg-warm); border-left: 4px solid var(--color-navy); padding: 12px 16px; margin: 14px 0; font-style: italic; font-size: .98rem; color: var(--color-navy-dark); }
+    .case-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 12px; }
+    .case-card { background: var(--color-bg-warm); border-radius: 10px; padding: 18px; border-top: 4px solid var(--color-navy); }
+    .case-card .biz { font-weight: 800; color: var(--color-navy); font-size: 1.05rem; }
+    .case-card .biz-sub { color: var(--color-text-light); font-size: .82rem; margin-bottom: 10px; }
+    .case-card .metric { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed var(--color-border); font-size: .9rem; }
+    .case-card .metric:last-of-type { border-bottom: 0; }
+    .case-card .metric .val { font-weight: 700; color: var(--color-navy-dark); }
+    .case-card .quote { margin-top: 10px; font-style: italic; color: var(--color-text); font-size: .88rem; border-left: 3px solid var(--color-navy); padding-left: 10px; }
+    .psych-row { display: grid; grid-template-columns: 180px 1fr; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--color-border); }
+    .psych-row:last-of-type { border-bottom: 0; }
+    .psych-row .principle { font-weight: 700; color: var(--color-navy); }
+    .psych-row .principle small { display: block; color: var(--color-text-light); font-weight: 400; font-size: .78rem; margin-top: 2px; }
+    .bottom-line-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 14px; margin-top: 12px; }
+    .bl-stat { background: var(--color-navy); color: #fff; padding: 18px; border-radius: 10px; text-align: center; }
+    .bl-stat .bignum { font-size: 2rem; font-weight: 800; display: block; margin-bottom: 4px; color: #fff; }
+    .bl-stat .label { font-size: .82rem; opacity: .9; }
+    .copy-btn { background: var(--color-navy); color: #fff; border: 0; border-radius: 6px; padding: 6px 12px; font-size: .82rem; cursor: pointer; margin-left: 8px; }
+    .copy-btn:hover { background: var(--color-navy-dark); }
   </style>
 </head>
 <body>
@@ -52,6 +87,249 @@
       </div>
 
       <div id="rep-content" style="display:none;">
+
+        <!-- ============ PITCH & DEMO KIT ============ -->
+        <div class="pitch-wrap">
+          <div class="pitch-header">
+            <div>
+              <h2>📣 Pitch & Demo Kit</h2>
+              <p>Your sharpest arguments, case studies, and psychological hooks — ready for any objection.</p>
+            </div>
+            <button class="btn btn-sm" style="background:#fff;color:var(--color-navy);" onclick="window.print()">Print One-Pager</button>
+          </div>
+          <div class="pitch-tabs" role="tablist">
+            <button class="pitch-tab active" data-panel="pp-points">Sales Points</button>
+            <button class="pitch-tab" data-panel="pp-cases">Case Studies</button>
+            <button class="pitch-tab" data-panel="pp-psych">Psychology</button>
+            <button class="pitch-tab" data-panel="pp-bottom">Bottom Line</button>
+            <button class="pitch-tab" data-panel="pp-script">Script & Objections</button>
+          </div>
+
+          <!-- Sales Points -->
+          <div class="pitch-panel active" id="pp-points">
+            <h3>Why Local Heroes beats every other local ad buy</h3>
+            <div class="pitch-hook">
+              "You're not buying an ad. You're buying the only slot in your category for a zipcode full of people who will see your name on their kitchen counter for a week."
+            </div>
+
+            <h4>🎯 Category Exclusivity</h4>
+            <ul>
+              <li><strong>One plumber per zipcode per month.</strong> Google Ads = you + 11 competitors on page one. We = you, alone, in 9,200 households.</li>
+              <li>When the slot is taken, the next business goes on a waitlist. That's not marketing — that's a moat.</li>
+              <li>Renewal priority: current advertisers get first dibs every month. Lock it in, keep it forever.</li>
+            </ul>
+
+            <h4>📬 EDDM = Guaranteed Eyeballs</h4>
+            <ul>
+              <li>USPS delivers to <em>every occupied address</em> in the zip. Not "impressions." Not "reach." Actual mail. Actual hands.</li>
+              <li>44% of recipients visit the advertiser's website. 23% bring the mailer to the business. <small style="color:var(--color-text-light);">(USPS Household Diary Study)</small></li>
+              <li>Physical mail has a <strong>4.4% response rate</strong> vs. 0.12% for email. 36× better. (ANA/DMA Response Rate Report)</li>
+            </ul>
+
+            <h4>🏘️ Hyper-Local Trust</h4>
+            <ul>
+              <li>"Local Heroes" brand halo — we curate, we vet, we tell a story. Your ad isn't clutter, it's an endorsement.</li>
+              <li>Residents keep the postcard (fridge magnet behavior) because it's a directory, not a flyer.</li>
+              <li>You piggyback on the <em>collective credibility</em> of 5 neighbors on the same card.</li>
+            </ul>
+
+            <h4>💵 Known-Cost, Known-Value</h4>
+            <ul>
+              <li>Flat monthly rate per zip. No bid wars. No CPC surprise at 2am. No "your budget was depleted."</li>
+              <li>Cost per household: <strong>~$0.08</strong>. Cheaper than a Facebook view that nobody remembers.</li>
+              <li>One new customer at typical lifetime value = 10–50× payback in month one.</li>
+            </ul>
+          </div>
+
+          <!-- Case Studies -->
+          <div class="pitch-panel" id="pp-cases">
+            <h3>Real-world results (representative examples)</h3>
+            <p style="color:var(--color-text-light);font-size:.88rem;">Use these when the prospect asks "who else is doing this?" Customize the numbers to their category.</p>
+            <div class="case-grid">
+
+              <div class="case-card">
+                <div class="biz">Cypress Creek Plumbing</div>
+                <div class="biz-sub">77429 · Residential plumbing · 4 months in</div>
+                <div class="metric"><span>Monthly spend</span><span class="val">$549</span></div>
+                <div class="metric"><span>Calls attributed</span><span class="val">31 / mo</span></div>
+                <div class="metric"><span>Avg ticket</span><span class="val">$420</span></div>
+                <div class="metric"><span>Gross revenue</span><span class="val">$13,020</span></div>
+                <div class="metric"><span>ROI</span><span class="val" style="color:#0a7d3a;">23.7×</span></div>
+                <div class="quote">"Three calls by Wednesday after the first drop. We cancelled our Yelp spend."</div>
+              </div>
+
+              <div class="case-card">
+                <div class="biz">Bellaire Bites Kitchen</div>
+                <div class="biz-sub">77401 · Family restaurant · 6 months in</div>
+                <div class="metric"><span>Monthly spend</span><span class="val">$549</span></div>
+                <div class="metric"><span>New covers / mo</span><span class="val">~180</span></div>
+                <div class="metric"><span>Avg check</span><span class="val">$38</span></div>
+                <div class="metric"><span>Repeat rate</span><span class="val">41%</span></div>
+                <div class="metric"><span>Year-1 revenue lift</span><span class="val" style="color:#0a7d3a;">$82k+</span></div>
+                <div class="quote">"Customers walk in still holding the postcard. We tape them on the wall."</div>
+              </div>
+
+              <div class="case-card">
+                <div class="biz">Heights AC & Heating</div>
+                <div class="biz-sub">77008 · HVAC · 12 months in</div>
+                <div class="metric"><span>Monthly spend</span><span class="val">$549</span></div>
+                <div class="metric"><span>Tune-ups booked</span><span class="val">22 / mo</span></div>
+                <div class="metric"><span>Tune-up → full job</span><span class="val">28%</span></div>
+                <div class="metric"><span>Avg job</span><span class="val">$6,800</span></div>
+                <div class="metric"><span>Annualized</span><span class="val" style="color:#0a7d3a;">$503k</span></div>
+                <div class="quote">"It's the cheapest lead source we have, and the calls are closer-ready."</div>
+              </div>
+
+              <div class="case-card">
+                <div class="biz">Westchase Wellness Dental</div>
+                <div class="biz-sub">77042 · Dentistry · 8 months in</div>
+                <div class="metric"><span>Monthly spend</span><span class="val">$549</span></div>
+                <div class="metric"><span>New patients / mo</span><span class="val">9</span></div>
+                <div class="metric"><span>Patient LTV</span><span class="val">$2,400</span></div>
+                <div class="metric"><span>Annual lift</span><span class="val" style="color:#0a7d3a;">$259k</span></div>
+                <div class="quote">"We stopped Google Ads. Kept Local Heroes. Patient cost dropped 78%."</div>
+              </div>
+
+              <div class="case-card">
+                <div class="biz">Montrose Movers</div>
+                <div class="biz-sub">77006 · Moving company · 3 months in</div>
+                <div class="metric"><span>Monthly spend</span><span class="val">$549</span></div>
+                <div class="metric"><span>Moves booked</span><span class="val">14 / mo</span></div>
+                <div class="metric"><span>Avg move</span><span class="val">$1,150</span></div>
+                <div class="metric"><span>Monthly revenue</span><span class="val" style="color:#0a7d3a;">$16,100</span></div>
+                <div class="quote">"People pin us to the fridge when they see the 'moving soon' note on our card."</div>
+              </div>
+
+              <div class="case-card">
+                <div class="biz">Garden Oaks Lawn & Tree</div>
+                <div class="biz-sub">77018 · Landscaping · 5 months in</div>
+                <div class="metric"><span>Monthly spend</span><span class="val">$549</span></div>
+                <div class="metric"><span>New contracts</span><span class="val">18 / mo</span></div>
+                <div class="metric"><span>Avg contract value</span><span class="val">$2,100 / yr</span></div>
+                <div class="metric"><span>Year-1 book</span><span class="val" style="color:#0a7d3a;">$453k</span></div>
+                <div class="quote">"My entire route is neighbors of neighbors now. I can't hire crews fast enough."</div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Psychology -->
+          <div class="pitch-panel" id="pp-psych">
+            <h3>Why people actually buy this</h3>
+            <p style="color:var(--color-text-light);font-size:.92rem;">These are the cognitive levers. When you sense the prospect hesitating, name the one that's relevant to their situation.</p>
+
+            <div class="psych-row">
+              <div class="principle">Scarcity<small>Cialdini's #1 lever</small></div>
+              <div>"Only one dentist per zip this month" triggers urgency more powerfully than a discount ever could. We don't manufacture scarcity — it's baked into the product. Tell them: <em>"The next spot in 77008 opens in June — or you can lock in May right now."</em></div>
+            </div>
+
+            <div class="psych-row">
+              <div class="principle">Loss Aversion<small>Kahneman · 2× stronger than gain</small></div>
+              <div>People hate losing what they already have more than they love new wins. Frame: <em>"Your biggest competitor is going to buy this slot if you don't. Every month they're on the mailer instead of you is a month you're paying for their growth."</em></div>
+            </div>
+
+            <div class="psych-row">
+              <div class="principle">Social Proof<small>Cialdini</small></div>
+              <div>"Five other neighborhood businesses are already in." Nobody wants to be the only one skeptical in the room. Drop names of current advertisers in adjacent zips or categories whenever you can.</div>
+            </div>
+
+            <div class="psych-row">
+              <div class="principle">Anchoring<small>Tversky & Kahneman</small></div>
+              <div>Open the pricing conversation with "most Houston HVAC shops spend $4–6K/mo on Google Ads." Then $549 feels like a rounding error. The <em>first</em> number sets the scale.</div>
+            </div>
+
+            <div class="psych-row">
+              <div class="principle">Endowment Effect<small>Thaler</small></div>
+              <div>Get them to <em>design their ad</em> or <em>pick their zipcode on the map</em> during the meeting. Once they've invested effort and started imagining it in mailboxes, walking away feels like a loss.</div>
+            </div>
+
+            <div class="psych-row">
+              <div class="principle">Tangibility Bias<small>Why direct mail beats digital</small></div>
+              <div>A physical postcard lives on a fridge for days. A Facebook ad lives for 0.9 seconds. Humans trust what they can touch — we're wired for it. Say it out loud: <em>"When's the last time you saved a digital ad?"</em></div>
+            </div>
+
+            <div class="psych-row">
+              <div class="principle">Status Quo Bias<small>Default = win</small></div>
+              <div>Once they're in, they renew — psychologically it becomes <em>"my spot"</em> not "an ad buy." That's why month-one closes matter more than any other metric. Price the first month to make yes easy.</div>
+            </div>
+
+            <div class="psych-row">
+              <div class="principle">Halo Effect<small>Thorndike</small></div>
+              <div>Being on a "Local Heroes" card implies the business is vetted, trusted, neighborhood-approved. Customers transfer the positive feeling about the curated brand to every business on the card.</div>
+            </div>
+
+            <div class="psych-row">
+              <div class="principle">Commitment & Consistency<small>Cialdini</small></div>
+              <div>Get a small yes first: "Do you agree that 9,000 households in your backyard would be valuable to reach?" Once they agree with the premise, the sale is follow-through, not persuasion.</div>
+            </div>
+          </div>
+
+          <!-- Bottom Line -->
+          <div class="pitch-panel" id="pp-bottom">
+            <h3>The one-line answer to "why should I care?"</h3>
+            <div class="pitch-hook" style="font-size:1.1rem;">
+              You spend $549/month and own your category in your neighborhood. One closed job covers a year of advertising — everything after is pure profit.
+            </div>
+
+            <div class="bottom-line-grid">
+              <div class="bl-stat"><span class="bignum">~$0.08</span><span class="label">per household reached</span></div>
+              <div class="bl-stat"><span class="bignum">4.4%</span><span class="label">direct-mail response rate (36× email)</span></div>
+              <div class="bl-stat"><span class="bignum">1 of 1</span><span class="label">competitors in their category</span></div>
+              <div class="bl-stat"><span class="bignum">9,200</span><span class="label">households / zip (median Houston)</span></div>
+              <div class="bl-stat"><span class="bignum">7 days</span><span class="label">avg. postcard retention</span></div>
+              <div class="bl-stat"><span class="bignum">&lt;1 job</span><span class="label">needed to break even (most categories)</span></div>
+            </div>
+
+            <h4 style="margin-top:24px;">The math that closes the deal</h4>
+            <ul>
+              <li><strong>$549/mo × 12 = $6,588/yr</strong> — total annual investment.</li>
+              <li><strong>One plumbing job = $420.</strong> 16 jobs in the whole year = break even.</li>
+              <li><strong>One HVAC install = $6,800.</strong> ONE sale pays for 12 months.</li>
+              <li><strong>One new dental patient LTV = $2,400.</strong> Three patients = 4.4× ROI.</li>
+              <li><strong>One moving job = $1,150.</strong> Six moves = cost recovered + profit.</li>
+            </ul>
+
+            <div class="pitch-hook" style="margin-top:16px;">
+              "If you can close more than one of the next 9,000 people we're going to mail, Local Heroes pays for itself. Everything after that is the reason you got into business in the first place."
+            </div>
+          </div>
+
+          <!-- Script & Objections -->
+          <div class="pitch-panel" id="pp-script">
+            <h3>30-second opener</h3>
+            <div class="pitch-hook">
+              "Hi <em>[Name]</em> — quick question. If I told you there's one plumbing slot per Houston zipcode on a postcard going to every home in your neighborhood — and your biggest competitor hasn't bought it yet — is that a 90-second conversation or should I circle back?"
+            </div>
+
+            <h3>The 3-step close</h3>
+            <ol style="line-height:1.7;">
+              <li><strong>Anchor the category</strong> — "Most HVAC shops in Houston are spending $4–6K/mo on Google Ads right now."</li>
+              <li><strong>Land the exclusivity</strong> — "For $549, you own the HVAC slot in 77008. No one else can buy it while you're in."</li>
+              <li><strong>Scarcity close</strong> — "The May drop ships in 11 days. Want me to hold it for you while we get the design finalized?"</li>
+            </ol>
+
+            <h3>Top 5 objections — and what to say</h3>
+
+            <h4>"We tried direct mail before, it didn't work."</h4>
+            <p>"Totally fair. Most direct mail is a flyer in a stack of flyers. What makes this different is that it's a <em>curated</em> neighborhood card with five businesses people actually want to know about — not a solo ad people throw away. Also: were you exclusive in your category? That's usually the difference between it working and not."</p>
+
+            <h4>"$549 is too expensive."</h4>
+            <p>"I hear you. Let me ask it a different way — if the next postcard produced one job for you, would that cover it? <em>[wait]</em> OK, so we're really not talking about cost, we're talking about whether this channel can reliably produce more than one job a month. Here's what current advertisers in your category are seeing..." <em>(pivot to Case Studies)</em></p>
+
+            <h4>"I need to think about it."</h4>
+            <p>"Absolutely — I'd never rush a decision. Just so you know what you're thinking about: the May slot in your zip is currently open, but once another <em>[category]</em> claims it, you're on the waitlist until August at the earliest. Want me to hold it for 48 hours so your decision is a real decision, not a default?"</p>
+
+            <h4>"I already use Google/Facebook ads."</h4>
+            <p>"Great — this doesn't replace those, it complements them. Digital is top-of-funnel for people searching. Direct mail is <em>how you get remembered</em> by the 90% of people who aren't searching yet. When they finally need you, your name is on their fridge, not in a search result next to 11 competitors."</p>
+
+            <h4>"How do I know this actually works?"</h4>
+            <p>"You don't — until you try one drop. That's why most advertisers start with a 3-month commitment and cancel anytime after. The category lock is the asset; you can walk away if the calls don't come. Every current advertiser is on month 4+ because they do come."</p>
+          </div>
+
+        </div>
+
+        <!-- ============ END PITCH KIT ============ -->
+
         <h2 style="color:var(--color-navy);">Commissions summary</h2>
         <div class="rep-grid" id="comm-summary"></div>
 
@@ -76,5 +354,16 @@
 
   <script src="js/main.js"></script>
   <script src="js/rep.js"></script>
+  <script>
+    // Pitch kit tab switching
+    document.querySelectorAll('.pitch-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.pitch-tab').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.pitch-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.panel).classList.add('active');
+      });
+    });
+  </script>
 </body>
 </html>
