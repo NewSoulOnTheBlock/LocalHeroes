@@ -4,8 +4,10 @@
 :root {
   --color-navy: #002868;
   --color-navy-dark: #001A44;
-  --color-rust: #BF3A2B;
-  --color-rust-dark: #9C2E22;
+  --color-navy-light: #1E4FA0;
+  /* Rust repurposed to navy so every accent becomes blue */
+  --color-rust: #002868;
+  --color-rust-dark: #001A44;
   --color-gold: #D4A843;
   --color-gold-light: #E8C96A;
   --color-bg: #FAF9F6;
@@ -38,9 +40,13 @@ html { scroll-behavior: smooth; }
 body {
   font-family: var(--font-body);
   color: var(--color-text);
-  background-color: var(--color-bg);
+  background-color: transparent;
   font-size: 17px;
   line-height: 1.7;
+}
+
+html {
+  background-color: var(--color-bg);
 }
 
 /* Site-wide video background */
@@ -158,12 +164,12 @@ img { max-width: 100%; height: auto; }
 }
 
 .btn-primary {
-  background: var(--color-rust);
+  background: var(--color-navy);
   color: var(--color-white);
 }
 
 .btn-primary:hover {
-  background: var(--color-rust-dark);
+  background: var(--color-navy-dark);
   color: var(--color-white);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
@@ -215,7 +221,9 @@ img { max-width: 100%; height: auto; }
   left: 0;
   right: 0;
   z-index: 1000;
-  background: var(--color-navy);
+  background: rgba(0, 40, 104, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   box-shadow: var(--shadow-md);
 }
 
@@ -311,7 +319,7 @@ img { max-width: 100%; height: auto; }
   justify-content: center;
   text-align: center;
   padding: 80px 24px;
-  background: linear-gradient(135deg, var(--color-navy) 0%, var(--color-navy-dark) 100%);
+  background: linear-gradient(135deg, rgba(0,40,104,0.55) 0%, rgba(0,26,68,0.65) 100%);
   color: var(--color-white);
   position: relative;
   overflow: hidden;
@@ -761,7 +769,7 @@ img { max-width: 100%; height: auto; }
 .page-hero {
   margin-top: 72px;
   padding: 80px 24px;
-  background: linear-gradient(135deg, var(--color-navy) 0%, var(--color-navy-dark) 100%);
+  background: linear-gradient(135deg, rgba(0,40,104,0.55) 0%, rgba(0,26,68,0.65) 100%);
   color: var(--color-white);
   text-align: center;
 }

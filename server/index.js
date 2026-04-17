@@ -23,13 +23,20 @@ app.use('/api/contact', require('./routes/contact'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/crm', require('./routes/crm'));
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/slots', require('./routes/slots'));
+app.use('/api/designs', require('./routes/designs'));
+app.use('/api/referrals', require('./routes/referrals'));
+app.use('/api/territories', require('./routes/territories'));
 
 // Zipcodes public endpoint
 const db = require('./db');
 app.get('/api/zipcodes', async (req, res) => {
   try {
     const { rows } = await db.query(`
-      SELECT z.zipcode, z.neighborhood, z.active, COUNT(b.id)::int AS business_count
+      SELECT z.zipcode, z.neighborhood, z.active,
+             z.household_count, z.monthly_price_cents, z.max_slots,
+             z.center_lat, z.center_lng,
+             COUNT(b.id)::int AS business_count
       FROM zipcodes z
       LEFT JOIN businesses b ON z.id = b.zipcode_id AND b.active = 1
       WHERE z.active = 1
@@ -37,6 +44,37 @@ app.get('/api/zipcodes', async (req, res) => {
       ORDER BY z.zipcode
     `);
     res.json(rows);
+  } catch (err) { console.error(err); res.status(500).json({ error: err.message }); }
+});
+
+// Zipcodes as GeoJSON FeatureCollection (point features with metadata)
+app.get('/api/zipcodes/geojson', async (req, res) => {
+  try {
+    const month = req.query.month ||
+      (() => { const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() + 1); return d.toISOString().slice(0, 7); })();
+    const { rows } = await db.query(`
+      SELECT z.id, z.zipcode, z.neighborhood, z.household_count, z.monthly_price_cents,
+             z.max_slots, z.center_lat, z.center_lng,
+             (SELECT COUNT(*)::int FROM postcard_slots s
+                WHERE s.zipcode_id = z.id AND s.mailing_month = $1) AS slots_claimed
+      FROM zipcodes z WHERE z.active = 1 AND z.center_lat IS NOT NULL
+    `, [month]);
+    const features = rows.map(r => ({
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: [r.center_lng, r.center_lat] },
+      properties: {
+        id: r.id,
+        zipcode: r.zipcode,
+        neighborhood: r.neighborhood,
+        household_count: r.household_count,
+        monthly_price_cents: r.monthly_price_cents,
+        max_slots: r.max_slots,
+        slots_claimed: r.slots_claimed,
+        slots_remaining: Math.max(0, (r.max_slots || 6) - r.slots_claimed),
+        mailing_month: month
+      }
+    }));
+    res.json({ type: 'FeatureCollection', features });
   } catch (err) { console.error(err); res.status(500).json({ error: err.message }); }
 });
 

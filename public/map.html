@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pick Your Zipcode - Local Heroes</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    .map-wrap { display: grid; grid-template-columns: 1fr 380px; gap: 20px; max-width: 1300px; margin: 0 auto; padding: 20px; }
+    #map { height: 70vh; min-height: 500px; border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,.12); }
+    .zip-panel { background: var(--color-bg-warm); border-radius: 14px; padding: 22px; box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+    .zip-panel h3 { margin-top: 0; }
+    .stat { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,.08); font-size: 0.95rem; }
+    .stat strong { color: var(--color-rust); }
+    .cat-list { max-height: 260px; overflow-y: auto; margin-top: 14px; }
+    .cat-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: 0.9rem; }
+    .cat-taken { color: #a33; }
+    .cat-avail { color: #2a7d2a; font-weight: 600; }
+    .legend { font-size: .82rem; color: var(--color-text-light); padding: 10px 0; }
+    .leaflet-marker-pane .zip-marker { font-weight: 700; font-size: 13px; color: #fff; text-align: center; line-height: 1; }
+    @media (max-width: 900px) { .map-wrap { grid-template-columns: 1fr; } #map { height: 55vh; } }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo"><span class="star">&#9733;</span> Local <span>Heroes</span></a>
+      <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+      <nav id="nav">
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="find.html">Find Local Heroes</a></li>
+          <li><a href="how-it-works.html">How It Works</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="map.html" class="active">Coverage Map</a></li>
+          <li><a href="apply.html" class="btn btn-primary">Become A Local Hero</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <h1>Houston Coverage Map</h1>
+    <p>Click a zipcode to see households, pricing, and open postcard slots.</p>
+  </section>
+
+  <section class="section">
+    <div class="map-wrap">
+      <div id="map"></div>
+      <div class="zip-panel" id="zip-panel">
+        <h3 id="zip-title">Select a zipcode</h3>
+        <p id="zip-neighborhood" style="color:var(--color-text-light);margin-top:-8px;"></p>
+        <div id="zip-stats" style="display:none;">
+          <div class="stat"><span>Households reached</span><strong id="stat-households">—</strong></div>
+          <div class="stat"><span>Monthly price</span><strong id="stat-price">—</strong></div>
+          <div class="stat"><span>Slots this month</span><strong id="stat-slots">—</strong></div>
+          <div class="stat"><span>Mailing month</span><strong id="stat-month">—</strong></div>
+          <h4 style="margin-top:18px;margin-bottom:4px;">Categories</h4>
+          <div class="legend">Only one business per category per zip.</div>
+          <div class="cat-list" id="cat-list"></div>
+          <a href="#" id="apply-btn" class="btn btn-primary" style="display:block;margin-top:18px;text-align:center;">Apply for this zipcode</a>
+        </div>
+        <p id="zip-hint" style="color:var(--color-text-light);">Click a marker on the map to view details.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <span>&copy; 2026 Local Heroes. All rights reserved.</span>
+        <span class="houston-pride">&#9733; Proudly serving Houston, TX &#9733;</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/map.js"></script>
+</body>
+</html>
