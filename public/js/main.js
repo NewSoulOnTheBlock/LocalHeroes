@@ -1,5 +1,26 @@
 /* Local Heroes - Main Frontend JS */
 
+// Inject site-wide video background (runs before DOMContentLoaded paint)
+(function injectBgVideo() {
+  if (document.querySelector('.bg-video')) return;
+  const tint = document.createElement('div');
+  tint.className = 'bg-video-tint';
+  const v = document.createElement('video');
+  v.className = 'bg-video';
+  v.src = '/images/bg-video.mp4';
+  v.autoplay = true;
+  v.loop = true;
+  v.muted = true;
+  v.playsInline = true;
+  v.setAttribute('aria-hidden', 'true');
+  const insert = () => {
+    document.body.prepend(tint);
+    document.body.prepend(v);
+  };
+  if (document.body) insert();
+  else document.addEventListener('DOMContentLoaded', insert, { once: true });
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
   // Mobile nav toggle
   const hamburger = document.getElementById('hamburger');

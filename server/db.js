@@ -149,6 +149,116 @@ async function init() {
       active INTEGER DEFAULT 1,
       created_at TIMESTAMPTZ DEFAULT NOW()
     );
+
+    -- Postcard slot tracking (feature: waitlist + category exclusivity)
+    CREATE TABLE IF NOT EXISTS postcard_slots (
+      id SERIAL PRIMARY KEY,
+      zipcode_id INTEGER NOT NULL REFERENCES zipcodes(id) ON DELETE CASCADE,
+      category_id INTEGER NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
+      mailing_month TEXT NOT NULL,
+      application_id INTEGER REFERENCES applications(id) ON DELETE SET NULL,
+      business_id INTEGER REFERENCES businesses(id) ON DELETE SET NULL,
+      status TEXT DEFAULT 'claimed',
+      claimed_at TIMESTAMPTZ DEFAULT NOW(),
+      UNIQUE(zipcode_id, category_id, mailing_month)
+    );
+
+    CREATE TABLE IF NOT EXISTS waitlist_entries (
+      id SERIAL PRIMARY KEY,
+      zipcode_id INTEGER NOT NULL REFERENCES zipcodes(id) ON DELETE CASCADE,
+      category_id INTEGER NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
+      mailing_month TEXT NOT NULL,
+      application_id INTEGER REFERENCES applications(id) ON DELETE CASCADE,
+      business_name TEXT,
+      contact_name TEXT,
+      email TEXT,
+      phone TEXT,
+      notified INTEGER DEFAULT 0,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+
+    -- Postcard designs (feature: self-serve ad designer)
+    CREATE TABLE IF NOT EXISTS design_templates (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      category_slug TEXT,
+      thumbnail_url TEXT,
+      canvas_json TEXT NOT NULL,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS postcard_designs (
+      id SERIAL PRIMARY KEY,
+      application_id INTEGER REFERENCES applications(id) ON DELETE SET NULL,
+      business_id INTEGER REFERENCES businesses(id) ON DELETE SET NULL,
+      owner_email TEXT,
+      title TEXT,
+      canvas_json TEXT NOT NULL,
+      preview_url TEXT,
+      template_id INTEGER REFERENCES design_templates(id),
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+    );
+
+    -- Referral program (feature: referrals)
+    CREATE TABLE IF NOT EXISTS referral_codes (
+      id SERIAL PRIMARY KEY,
+      code TEXT UNIQUE NOT NULL,
+      owner_business_id INTEGER REFERENCES businesses(id) ON DELETE SET NULL,
+      owner_salesperson_id INTEGER REFERENCES salespeople(id) ON DELETE SET NULL,
+      owner_email TEXT,
+      reward_cents INTEGER DEFAULT 5000,
+      discount_cents INTEGER DEFAULT 5000,
+      active INTEGER DEFAULT 1,
+      times_used INTEGER DEFAULT 0,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS referrals (
+      id SERIAL PRIMARY KEY,
+      code_id INTEGER NOT NULL REFERENCES referral_codes(id) ON DELETE CASCADE,
+      referred_application_id INTEGER REFERENCES applications(id) ON DELETE SET NULL,
+      referred_email TEXT,
+      status TEXT DEFAULT 'pending',
+      reward_paid_at TIMESTAMPTZ,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+
+    -- Sales rep territories + commissions (feature: territory CRM)
+    CREATE TABLE IF NOT EXISTS sales_territories (
+      id SERIAL PRIMARY KEY,
+      salesperson_id INTEGER NOT NULL REFERENCES salespeople(id) ON DELETE CASCADE,
+      zipcode_id INTEGER NOT NULL REFERENCES zipcodes(id) ON DELETE CASCADE,
+      assigned_at TIMESTAMPTZ DEFAULT NOW(),
+      UNIQUE(salesperson_id, zipcode_id)
+    );
+
+    CREATE TABLE IF NOT EXISTS sales_commissions (
+      id SERIAL PRIMARY KEY,
+      salesperson_id INTEGER NOT NULL REFERENCES salespeople(id) ON DELETE CASCADE,
+      contact_id INTEGER REFERENCES crm_contacts(id) ON DELETE SET NULL,
+      application_id INTEGER REFERENCES applications(id) ON DELETE SET NULL,
+      business_id INTEGER REFERENCES businesses(id) ON DELETE SET NULL,
+      amount_cents INTEGER NOT NULL,
+      period TEXT,
+      status TEXT DEFAULT 'pending',
+      notes TEXT,
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      paid_at TIMESTAMPTZ
+    );
+  `);
+
+  // Additive columns on pre-existing tables (idempotent)
+  await pool.query(`
+    ALTER TABLE zipcodes   ADD COLUMN IF NOT EXISTS household_count   INTEGER DEFAULT 3500;
+    ALTER TABLE zipcodes   ADD COLUMN IF NOT EXISTS monthly_price_cents INTEGER DEFAULT 29900;
+    ALTER TABLE zipcodes   ADD COLUMN IF NOT EXISTS max_slots         INTEGER DEFAULT 6;
+    ALTER TABLE zipcodes   ADD COLUMN IF NOT EXISTS center_lat        DOUBLE PRECISION;
+    ALTER TABLE zipcodes   ADD COLUMN IF NOT EXISTS center_lng        DOUBLE PRECISION;
+    ALTER TABLE crm_contacts  ADD COLUMN IF NOT EXISTS pipeline_stage TEXT DEFAULT 'new';
+    ALTER TABLE applications  ADD COLUMN IF NOT EXISTS referral_code TEXT;
+    ALTER TABLE applications  ADD COLUMN IF NOT EXISTS postcard_design_id INTEGER REFERENCES postcard_designs(id) ON DELETE SET NULL;
+    ALTER TABLE applications  ADD COLUMN IF NOT EXISTS mailing_month TEXT;
   `);
 
   // Additive columns for salesperson attribution (idempotent)
@@ -225,6 +335,93 @@ async function init() {
       'INSERT INTO zipcodes (zipcode, neighborhood) VALUES ($1, $2) ON CONFLICT (zipcode) DO NOTHING',
       [zip, hood]
     );
+  }
+
+  // Seed Houston zip centroids + household estimates (approximate real-world values)
+  const zipGeo = {
+    '77001': { lat: 29.7589, lng: -95.3677, hh: 50,   price: 19900, max: 4 },
+    '77002': { lat: 29.7570, lng: -95.3634, hh: 6500, price: 34900, max: 6 },
+    '77003': { lat: 29.7498, lng: -95.3468, hh: 5200, price: 27900, max: 6 },
+    '77004': { lat: 29.7259, lng: -95.3637, hh: 14200, price: 29900, max: 6 },
+    '77005': { lat: 29.7169, lng: -95.4227, hh: 9800,  price: 34900, max: 6 },
+    '77006': { lat: 29.7413, lng: -95.3905, hh: 13500, price: 32900, max: 6 },
+    '77007': { lat: 29.7739, lng: -95.4007, hh: 18200, price: 32900, max: 6 },
+    '77008': { lat: 29.8017, lng: -95.4120, hh: 15500, price: 32900, max: 6 },
+    '77009': { lat: 29.7998, lng: -95.3612, hh: 14400, price: 27900, max: 6 },
+    '77019': { lat: 29.7530, lng: -95.4094, hh: 10600, price: 36900, max: 5 },
+    '77024': { lat: 29.7656, lng: -95.5234, hh: 18800, price: 36900, max: 6 },
+    '77025': { lat: 29.6832, lng: -95.4432, hh: 12900, price: 29900, max: 6 },
+    '77027': { lat: 29.7431, lng: -95.4428, hh: 10200, price: 34900, max: 6 },
+    '77030': { lat: 29.7089, lng: -95.4002, hh: 4900,  price: 27900, max: 6 },
+    '77035': { lat: 29.6531, lng: -95.4755, hh: 14300, price: 25900, max: 6 },
+    '77040': { lat: 29.8611, lng: -95.5498, hh: 16700, price: 24900, max: 6 },
+    '77042': { lat: 29.7437, lng: -95.5739, hh: 21500, price: 26900, max: 6 },
+    '77056': { lat: 29.7498, lng: -95.4637, hh: 11800, price: 34900, max: 6 },
+    '77057': { lat: 29.7391, lng: -95.4930, hh: 19200, price: 29900, max: 6 },
+    '77077': { lat: 29.7503, lng: -95.6128, hh: 22400, price: 27900, max: 6 },
+    '77079': { lat: 29.7698, lng: -95.6078, hh: 17300, price: 32900, max: 6 },
+    '77080': { lat: 29.8212, lng: -95.5367, hh: 20100, price: 24900, max: 6 },
+    '77081': { lat: 29.7098, lng: -95.4897, hh: 18900, price: 23900, max: 6 },
+    '77084': { lat: 29.8353, lng: -95.6657, hh: 31200, price: 26900, max: 6 },
+    '77096': { lat: 29.6712, lng: -95.4987, hh: 15100, price: 26900, max: 6 },
+    '77098': { lat: 29.7356, lng: -95.4180, hh: 9400,  price: 32900, max: 5 }
+  };
+  for (const [zip, g] of Object.entries(zipGeo)) {
+    await pool.query(
+      `UPDATE zipcodes SET center_lat = $1, center_lng = $2,
+         household_count = COALESCE(NULLIF(household_count,0), $3),
+         monthly_price_cents = COALESCE(NULLIF(monthly_price_cents,0), $4),
+         max_slots = COALESCE(NULLIF(max_slots,0), $5)
+       WHERE zipcode = $6`,
+      [g.lat, g.lng, g.hh, g.price, g.max, zip]
+    );
+  }
+
+  // Seed postcard design templates (minimal starter set)
+  const { rows: tplCount } = await pool.query('SELECT COUNT(*)::int AS c FROM design_templates');
+  if (tplCount[0].c === 0) {
+    const tpl = (name, cat, obj) => [name, cat, JSON.stringify(obj)];
+    const blank = {
+      width: 1050, height: 675,
+      objects: [
+        { type: 'rect', left: 0, top: 0, width: 1050, height: 675, fill: '#fff8ee' },
+        { type: 'text', left: 40, top: 40, text: 'YOUR BUSINESS NAME', fontSize: 52, fontWeight: '800', fill: '#1e3a5f' },
+        { type: 'text', left: 40, top: 120, text: 'A tagline that sells', fontSize: 28, fill: '#b5532a' },
+        { type: 'text', left: 40, top: 560, text: '(713) 555-0000  ·  yourbusiness.com', fontSize: 22, fill: '#333' }
+      ]
+    };
+    const restaurant = {
+      width: 1050, height: 675,
+      objects: [
+        { type: 'rect', left: 0, top: 0, width: 1050, height: 675, fill: '#b5532a' },
+        { type: 'rect', left: 40, top: 40, width: 970, height: 595, fill: '#fff8ee' },
+        { type: 'text', left: 80, top: 80, text: 'TASTE THE NEIGHBORHOOD', fontSize: 42, fontWeight: '800', fill: '#1e3a5f' },
+        { type: 'text', left: 80, top: 150, text: 'Your Restaurant Name', fontSize: 56, fontWeight: '700', fill: '#b5532a' },
+        { type: 'text', left: 80, top: 240, text: 'Open daily · Dine-in · Takeout · Delivery', fontSize: 24, fill: '#333' },
+        { type: 'text', left: 80, top: 560, text: 'Show this card for 10% off your first visit', fontSize: 22, fontWeight: '600', fill: '#1e3a5f' }
+      ]
+    };
+    const home = {
+      width: 1050, height: 675,
+      objects: [
+        { type: 'rect', left: 0, top: 0, width: 1050, height: 675, fill: '#1e3a5f' },
+        { type: 'text', left: 60, top: 70, text: 'YOUR TRUSTED', fontSize: 36, fill: '#f0c674' },
+        { type: 'text', left: 60, top: 130, text: 'HOME PRO', fontSize: 84, fontWeight: '800', fill: '#fff' },
+        { type: 'text', left: 60, top: 260, text: 'Licensed · Insured · 5★ Reviews', fontSize: 26, fill: '#f0c674' },
+        { type: 'text', left: 60, top: 560, text: 'Call today for a free estimate — (713) 555-0000', fontSize: 24, fontWeight: '600', fill: '#fff' }
+      ]
+    };
+    const templates = [
+      tpl('Blank', null, blank),
+      tpl('Restaurant — Taste', 'restaurants', restaurant),
+      tpl('Home Services — Trusted Pro', 'home-services', home)
+    ];
+    for (const [n, c, j] of templates) {
+      await pool.query(
+        'INSERT INTO design_templates (name, category_slug, canvas_json) VALUES ($1, $2, $3)',
+        [n, c, j]
+      );
+    }
   }
 
   // Seed sample businesses (only if empty)

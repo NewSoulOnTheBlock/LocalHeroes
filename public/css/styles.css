@@ -43,6 +43,29 @@ body {
   line-height: 1.7;
 }
 
+/* Site-wide video background */
+.bg-video {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  object-fit: cover;
+  z-index: -2;
+  pointer-events: none;
+  opacity: 0.18;
+}
+.bg-video-tint {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: var(--color-bg);
+  opacity: 0.55;
+  z-index: -1;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bg-video { display: none; }
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   font-weight: 700;
