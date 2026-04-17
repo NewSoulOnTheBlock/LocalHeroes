@@ -350,6 +350,21 @@ img { max-width: 100%; height: auto; }
 
 .hero > * { position: relative; z-index: 1; }
 
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(70vw, 640px);
+  height: min(70vw, 640px);
+  background: url('../images/logo.png') center/contain no-repeat;
+  opacity: 0.12;
+  filter: invert(1);
+  pointer-events: none;
+  z-index: 0;
+}
+
 .hero h1 {
   color: var(--color-white);
   font-size: 4rem;
