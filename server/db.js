@@ -110,16 +110,20 @@ db.exec(`
 
 // Seed default categories
 const categories = [
-  ['Home Services', 'home-services'],
-  ['Restaurants & Food', 'restaurants-food'],
-  ['Health & Wellness', 'health-wellness'],
-  ['Auto Services', 'auto-services'],
-  ['Beauty & Personal Care', 'beauty-personal-care'],
-  ['Professional Services', 'professional-services'],
-  ['Fitness & Recreation', 'fitness-recreation'],
-  ['Retail & Shopping', 'retail-shopping'],
-  ['Pet Services', 'pet-services'],
-  ['Education & Tutoring', 'education-tutoring']
+  ['Retail Stores', 'retail-stores'],
+  ['Restaurants', 'restaurants'],
+  ['Medical Professionals', 'medical-professionals'],
+  ['Dry Cleaners', 'dry-cleaners'],
+  ['Contractors', 'contractors'],
+  ['Realtors', 'realtors'],
+  ['Auto Sales & Services', 'auto-sales-services'],
+  ['Nurseries & Landscaping', 'nurseries-landscaping'],
+  ['Churches', 'churches'],
+  ['Political Campaigns', 'political-campaigns'],
+  ['Coffee Shops', 'coffee-shops'],
+  ['Financial Services', 'financial-services'],
+  ['Galleries', 'galleries'],
+  ['Home Services', 'home-services']
 ];
 
 const insertCategory = db.prepare(
