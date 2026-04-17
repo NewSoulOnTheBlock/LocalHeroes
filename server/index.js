@@ -25,22 +25,28 @@ app.use('/api/crm', require('./routes/crm'));
 
 // Zipcodes public endpoint
 const db = require('./db');
-app.get('/api/zipcodes', (req, res) => {
-  const zips = db.prepare(`
-    SELECT z.zipcode, z.neighborhood, z.active, COUNT(b.id) as business_count
-    FROM zipcodes z
-    LEFT JOIN businesses b ON z.id = b.zipcode_id AND b.active = 1
-    WHERE z.active = 1
-    GROUP BY z.id
-    ORDER BY z.zipcode
-  `).all();
-  res.json(zips);
+app.get('/api/zipcodes', async (req, res) => {
+  try {
+    const { rows } = await db.query(`
+      SELECT z.zipcode, z.neighborhood, z.active, COUNT(b.id)::int AS business_count
+      FROM zipcodes z
+      LEFT JOIN businesses b ON z.id = b.zipcode_id AND b.active = 1
+      WHERE z.active = 1
+      GROUP BY z.id
+      ORDER BY z.zipcode
+    `);
+    res.json(rows);
+  } catch (err) { console.error(err); res.status(500).json({ error: err.message }); }
 });
 
 // Categories public endpoint
-app.get('/api/categories', (req, res) => {
-  res.json(db.prepare('SELECT * FROM categories ORDER BY name').all());
+app.get('/api/categories', async (req, res) => {
+  try { res.json((await db.query('SELECT * FROM categories ORDER BY name')).rows); }
+  catch (err) { console.error(err); res.status(500).json({ error: err.message }); }
 });
+
+// Initialize DB schema/seed on startup
+db.init().then(() => console.log('DB initialized')).catch(err => console.error('DB init error:', err));
 
 // SPA fallback — serve index.html for non-API, non-file routes
 app.get('*', (req, res) => {
