@@ -2,12 +2,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --color-navy: #002868;
-  --color-navy-dark: #001A44;
-  --color-navy-light: #1E4FA0;
-  /* Rust repurposed to navy so every accent becomes blue */
-  --color-rust: #002868;
-  --color-rust-dark: #001A44;
+  /* Deep red palette (var names kept as "navy" for backward-compat) */
+  --color-navy: #9B1C1C;
+  --color-navy-dark: #6B0F0F;
+  --color-navy-light: #C0392B;
+  /* Rust repurposed to deep red so every accent matches */
+  --color-rust: #9B1C1C;
+  --color-rust-dark: #6B0F0F;
   --color-gold: #D4A843;
   --color-gold-light: #E8C96A;
   --color-bg: #FAF9F6;
@@ -57,14 +58,14 @@ html {
   object-fit: cover;
   z-index: -2;
   pointer-events: none;
-  opacity: 0.18;
+  opacity: 0.55;
 }
 .bg-video-tint {
   position: fixed;
   top: 0; left: 0;
   width: 100vw; height: 100vh;
   background: var(--color-bg);
-  opacity: 0.55;
+  opacity: 0.2;
   z-index: -1;
   pointer-events: none;
 }
@@ -221,7 +222,7 @@ img { max-width: 100%; height: auto; }
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(0, 40, 104, 0.55);
+  background: rgba(155, 28, 28, 0.4);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   box-shadow: var(--shadow-md);
@@ -319,7 +320,7 @@ img { max-width: 100%; height: auto; }
   justify-content: center;
   text-align: center;
   padding: 80px 24px;
-  background: linear-gradient(135deg, rgba(0,40,104,0.55) 0%, rgba(0,26,68,0.65) 100%);
+  background: linear-gradient(135deg, rgba(155,28,28,0.35) 0%, rgba(107,15,15,0.45) 100%);
   color: var(--color-white);
   position: relative;
   overflow: hidden;
@@ -769,7 +770,7 @@ img { max-width: 100%; height: auto; }
 .page-hero {
   margin-top: 72px;
   padding: 80px 24px;
-  background: linear-gradient(135deg, rgba(0,40,104,0.55) 0%, rgba(0,26,68,0.65) 100%);
+  background: linear-gradient(135deg, rgba(155,28,28,0.35) 0%, rgba(107,15,15,0.45) 100%);
   color: var(--color-white);
   text-align: center;
 }
