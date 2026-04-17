@@ -723,7 +723,7 @@ img { max-width: 100%; height: auto; }
 
 /* === FOOTER === */
 .footer {
-  background: var(--color-navy-dark);
+  background: transparent;
   color: rgba(255,255,255,0.7);
   padding: 60px 0 24px;
 }
