@@ -359,7 +359,7 @@ img { max-width: 100%; height: auto; }
   width: min(70vw, 640px);
   height: min(70vw, 640px);
   background: url('../images/logo.png') center/contain no-repeat;
-  opacity: 0.12;
+  opacity: 0.35;
   filter: invert(1);
   pointer-events: none;
   z-index: 0;
