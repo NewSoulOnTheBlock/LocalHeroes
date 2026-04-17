@@ -174,6 +174,68 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   }
 
+  // --- Apply Form: zipcode prefill, live availability, referral validation ---
+  const applyZip = document.getElementById('apply-zipcode');
+  const applyCat = document.getElementById('apply-category');
+  const applyAvail = document.getElementById('apply-availability');
+  const applyRef = document.getElementById('apply-referral');
+  const applyRefMsg = document.getElementById('apply-referral-msg');
+
+  if (applyZip) {
+    const params = new URLSearchParams(window.location.search);
+    const prefill = params.get('zipcode');
+    if (prefill && /^\d{5}$/.test(prefill)) applyZip.value = prefill;
+
+    const refresh = async () => {
+      if (!applyAvail) return;
+      const z = applyZip.value.trim();
+      const catName = applyCat && applyCat.value ? applyCat.value : '';
+      if (!/^\d{5}$/.test(z)) { applyAvail.innerHTML = ''; return; }
+      try {
+        const r = await fetch(`/api/slots/availability?zipcode=${z}`);
+        if (!r.ok) { applyAvail.innerHTML = ''; return; }
+        const d = await r.json();
+        const price = d.monthly_price_cents ? `$${(d.monthly_price_cents/100).toFixed(0)}/mo` : '';
+        let header = `<div style="color:var(--color-text-light);">${d.neighborhood || z} · ~${(d.household_count||0).toLocaleString()} households · ${price} · ${d.slots_remaining}/${d.max_slots} slots left for ${d.mailing_month}</div>`;
+        let line = '';
+        if (catName) {
+          const cat = (d.categories || []).find(c => c.name === catName || c.slug === catName);
+          if (cat && cat.available) {
+            line = `<div style="color:#0a7d3a;font-weight:600;">✓ "${catName}" is open for ${d.mailing_month}.</div>`;
+          } else if (cat && cat.taken) {
+            line = `<div style="color:#b5532a;font-weight:600;">"${catName}" is taken in ${z} for ${d.mailing_month}. You'll be added to the waitlist (${cat.waitlist_count} ahead).</div>`;
+          } else if (d.zip_full) {
+            line = `<div style="color:#b5532a;font-weight:600;">All slots filled in ${z} for ${d.mailing_month}. You'll join the waitlist.</div>`;
+          }
+        }
+        applyAvail.innerHTML = header + line;
+      } catch (e) { applyAvail.innerHTML = ''; }
+    };
+    applyZip.addEventListener('blur', refresh);
+    if (applyCat) applyCat.addEventListener('change', refresh);
+    if (prefill) refresh();
+  }
+
+  if (applyRef && applyRefMsg) {
+    applyRef.addEventListener('blur', async () => {
+      const code = applyRef.value.trim().toUpperCase();
+      if (!code) { applyRefMsg.innerHTML = ''; return; }
+      try {
+        const r = await fetch('/api/referrals/validate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code })
+        });
+        const d = await r.json();
+        if (r.ok && d.valid) {
+          applyRefMsg.innerHTML = `<span style="color:#0a7d3a;">✓ Valid — $${(d.discount_cents/100).toFixed(0)} credit will be applied.</span>`;
+        } else {
+          applyRefMsg.innerHTML = `<span style="color:#b5532a;">${d.error || 'Invalid or expired code.'}</span>`;
+        }
+      } catch (e) { applyRefMsg.innerHTML = ''; }
+    });
+  }
+
   // --- Apply Form Submission ---
   const applyForm = document.getElementById('apply-form');
   if (applyForm) {
@@ -190,8 +252,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await res.json();
 
         if (res.ok) {
-          msgDiv.innerHTML = '<div class="form-message success">Application submitted! We\'ll review it within 48 hours and get back to you.</div>';
+          const waitlisted = data.placement === 'waitlisted' || data.status === 'waitlisted';
+          msgDiv.innerHTML = waitlisted
+            ? '<div class="form-message success">You\'re on the waitlist! That slot is currently taken — we\'ll email you the moment it opens up.</div>'
+            : '<div class="form-message success">Application submitted! We\'ll review it within 48 hours and get back to you.</div>';
           applyForm.reset();
+          if (applyAvail) applyAvail.innerHTML = '';
+          if (applyRefMsg) applyRefMsg.innerHTML = '';
         } else {
           msgDiv.innerHTML = `<div class="form-message error">${data.error || 'Something went wrong. Please try again.'}</div>`;
         }

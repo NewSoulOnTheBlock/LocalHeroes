@@ -177,29 +177,6 @@ async function init() {
       created_at TIMESTAMPTZ DEFAULT NOW()
     );
 
-    -- Postcard designs (feature: self-serve ad designer)
-    CREATE TABLE IF NOT EXISTS design_templates (
-      id SERIAL PRIMARY KEY,
-      name TEXT NOT NULL,
-      category_slug TEXT,
-      thumbnail_url TEXT,
-      canvas_json TEXT NOT NULL,
-      created_at TIMESTAMPTZ DEFAULT NOW()
-    );
-
-    CREATE TABLE IF NOT EXISTS postcard_designs (
-      id SERIAL PRIMARY KEY,
-      application_id INTEGER REFERENCES applications(id) ON DELETE SET NULL,
-      business_id INTEGER REFERENCES businesses(id) ON DELETE SET NULL,
-      owner_email TEXT,
-      title TEXT,
-      canvas_json TEXT NOT NULL,
-      preview_url TEXT,
-      template_id INTEGER REFERENCES design_templates(id),
-      created_at TIMESTAMPTZ DEFAULT NOW(),
-      updated_at TIMESTAMPTZ DEFAULT NOW()
-    );
-
     -- Referral program (feature: referrals)
     CREATE TABLE IF NOT EXISTS referral_codes (
       id SERIAL PRIMARY KEY,
@@ -257,7 +234,6 @@ async function init() {
     ALTER TABLE zipcodes   ADD COLUMN IF NOT EXISTS center_lng        DOUBLE PRECISION;
     ALTER TABLE crm_contacts  ADD COLUMN IF NOT EXISTS pipeline_stage TEXT DEFAULT 'new';
     ALTER TABLE applications  ADD COLUMN IF NOT EXISTS referral_code TEXT;
-    ALTER TABLE applications  ADD COLUMN IF NOT EXISTS postcard_design_id INTEGER REFERENCES postcard_designs(id) ON DELETE SET NULL;
     ALTER TABLE applications  ADD COLUMN IF NOT EXISTS mailing_month TEXT;
   `);
 
@@ -375,53 +351,6 @@ async function init() {
        WHERE zipcode = $6`,
       [g.lat, g.lng, g.hh, g.price, g.max, zip]
     );
-  }
-
-  // Seed postcard design templates (minimal starter set)
-  const { rows: tplCount } = await pool.query('SELECT COUNT(*)::int AS c FROM design_templates');
-  if (tplCount[0].c === 0) {
-    const tpl = (name, cat, obj) => [name, cat, JSON.stringify(obj)];
-    const blank = {
-      width: 1050, height: 675,
-      objects: [
-        { type: 'rect', left: 0, top: 0, width: 1050, height: 675, fill: '#fff8ee' },
-        { type: 'text', left: 40, top: 40, text: 'YOUR BUSINESS NAME', fontSize: 52, fontWeight: '800', fill: '#1e3a5f' },
-        { type: 'text', left: 40, top: 120, text: 'A tagline that sells', fontSize: 28, fill: '#b5532a' },
-        { type: 'text', left: 40, top: 560, text: '(713) 555-0000  ·  yourbusiness.com', fontSize: 22, fill: '#333' }
-      ]
-    };
-    const restaurant = {
-      width: 1050, height: 675,
-      objects: [
-        { type: 'rect', left: 0, top: 0, width: 1050, height: 675, fill: '#b5532a' },
-        { type: 'rect', left: 40, top: 40, width: 970, height: 595, fill: '#fff8ee' },
-        { type: 'text', left: 80, top: 80, text: 'TASTE THE NEIGHBORHOOD', fontSize: 42, fontWeight: '800', fill: '#1e3a5f' },
-        { type: 'text', left: 80, top: 150, text: 'Your Restaurant Name', fontSize: 56, fontWeight: '700', fill: '#b5532a' },
-        { type: 'text', left: 80, top: 240, text: 'Open daily · Dine-in · Takeout · Delivery', fontSize: 24, fill: '#333' },
-        { type: 'text', left: 80, top: 560, text: 'Show this card for 10% off your first visit', fontSize: 22, fontWeight: '600', fill: '#1e3a5f' }
-      ]
-    };
-    const home = {
-      width: 1050, height: 675,
-      objects: [
-        { type: 'rect', left: 0, top: 0, width: 1050, height: 675, fill: '#1e3a5f' },
-        { type: 'text', left: 60, top: 70, text: 'YOUR TRUSTED', fontSize: 36, fill: '#f0c674' },
-        { type: 'text', left: 60, top: 130, text: 'HOME PRO', fontSize: 84, fontWeight: '800', fill: '#fff' },
-        { type: 'text', left: 60, top: 260, text: 'Licensed · Insured · 5★ Reviews', fontSize: 26, fill: '#f0c674' },
-        { type: 'text', left: 60, top: 560, text: 'Call today for a free estimate — (713) 555-0000', fontSize: 24, fontWeight: '600', fill: '#fff' }
-      ]
-    };
-    const templates = [
-      tpl('Blank', null, blank),
-      tpl('Restaurant — Taste', 'restaurants', restaurant),
-      tpl('Home Services — Trusted Pro', 'home-services', home)
-    ];
-    for (const [n, c, j] of templates) {
-      await pool.query(
-        'INSERT INTO design_templates (name, category_slug, canvas_json) VALUES ($1, $2, $3)',
-        [n, c, j]
-      );
-    }
   }
 
   // Seed sample businesses (only if empty)

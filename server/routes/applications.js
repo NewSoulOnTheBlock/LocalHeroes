@@ -39,7 +39,7 @@ router.post('/', upload.single('logo'), async (req, res) => {
     const {
       business_name, contact_name, email, phone,
       website, zipcode, category, years_in_business,
-      description, why_featured, referral_code, postcard_design_id,
+      description, why_featured, referral_code,
       mailing_month
     } = req.body;
 
@@ -93,14 +93,13 @@ router.post('/', upload.single('logo'), async (req, res) => {
       `INSERT INTO applications
         (business_name, contact_name, email, phone, website, zipcode, category,
          years_in_business, description, why_featured, logo_path, status,
-         referral_code, postcard_design_id, mailing_month)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
+         referral_code, mailing_month)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
        RETURNING id`,
       [business_name, contact_name, email, phone, website || null, zipcode, category,
        years_in_business ? parseInt(years_in_business) : null, description || null,
        why_featured || null, logoPath, initialStatus,
        referralRow ? referralRow.code : null,
-       postcard_design_id ? parseInt(postcard_design_id) : null,
        month]
     );
     const appId = inserted[0].id;

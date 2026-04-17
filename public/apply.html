@@ -22,6 +22,7 @@
         <ul class="nav-links">
           <li><a href="index.html">Home</a></li>
           <li><a href="find.html">Find Local Heroes</a></li>
+          <li><a href="map.html">Coverage Map</a></li>
           <li><a href="how-it-works.html">How It Works</a></li>
           <li><a href="pricing.html">Pricing</a></li>
           <li><a href="about.html">About</a></li>
@@ -94,7 +95,11 @@
 
         <div class="form-group">
           <label class="required">Target Zipcode</label>
-          <input type="text" name="zipcode" required maxlength="5" pattern="[0-9]{5}" placeholder="Houston zipcode you want to reach">
+          <input type="text" name="zipcode" id="apply-zipcode" required maxlength="5" pattern="[0-9]{5}" placeholder="Houston zipcode you want to reach">
+          <small style="color:var(--color-text-light);display:block;margin-top:4px;">
+            Not sure? <a href="map.html" style="color:var(--color-navy);font-weight:600;">Pick from the coverage map →</a>
+          </small>
+          <div id="apply-availability" style="margin-top:10px;font-size:.9rem;"></div>
         </div>
 
         <div class="form-group">
@@ -111,6 +116,12 @@
           <label>Business Logo</label>
           <input type="file" name="logo" accept=".jpg,.jpeg,.png,.svg,.webp" style="padding:8px;">
           <small style="color:var(--color-text-light);display:block;margin-top:4px;">JPG, PNG, SVG, or WebP. Max 5MB.</small>
+        </div>
+
+        <div class="form-group">
+          <label>Referral Code <span style="color:var(--color-text-light);font-size:0.85rem;">(optional)</span></label>
+          <input type="text" name="referral_code" id="apply-referral" placeholder="LH-XXXXXX" style="text-transform:uppercase;">
+          <div id="apply-referral-msg" style="margin-top:6px;font-size:.88rem;"></div>
         </div>
 
         <div style="margin-top:32px;">

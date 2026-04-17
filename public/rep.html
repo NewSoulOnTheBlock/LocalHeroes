@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales Rep Dashboard - Local Heroes</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .rep-wrap { max-width: 1300px; margin: 0 auto; padding: 20px; }
+    .rep-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 14px; margin-bottom: 20px; }
+    .rep-card { background: var(--color-bg-warm); padding: 16px; border-radius: 10px; box-shadow: var(--shadow-sm); }
+    .rep-card h4 { margin: 0 0 6px; color: var(--color-navy); font-size: .95rem; }
+    .rep-card .num { font-size: 1.8rem; font-weight: 800; color: var(--color-navy-dark); }
+    .pipeline { display: grid; grid-template-columns: repeat(6,1fr); gap: 10px; margin-top: 20px; }
+    .stage { background: var(--color-bg-warm); border-radius: 10px; padding: 10px; min-height: 300px; }
+    .stage h4 { margin: 0 0 10px; font-size: .85rem; text-transform: uppercase; color: var(--color-navy); text-align: center; }
+    .contact-card { background: #fff; border-radius: 6px; padding: 8px; margin-bottom: 6px; cursor: grab; font-size: .82rem; box-shadow: var(--shadow-sm); }
+    .contact-card.dragging { opacity: .4; }
+    .contact-card .name { font-weight: 700; color: var(--color-navy); }
+    .contact-card .meta { color: var(--color-text-light); font-size: .72rem; margin-top: 3px; }
+    .stage.drop-over { background: #e8eef9; }
+    table.rep-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: var(--shadow-sm); }
+    table.rep-table th, table.rep-table td { padding: 10px 12px; border-bottom: 1px solid var(--color-border); text-align: left; font-size: .9rem; }
+    table.rep-table th { background: var(--color-navy); color: #fff; }
+    @media (max-width: 900px) { .pipeline { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo"><span class="star">&#9733;</span> Local <span>Heroes</span></a>
+      <nav id="nav">
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="admin.html">Admin</a></li>
+          <li><a href="rep.html" class="active">Rep Dashboard</a></li>
+          <li><button class="btn btn-primary" id="logout-btn">Logout</button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <h1>Sales Rep Dashboard</h1>
+    <p>Your territories, pipeline, and commissions — in one place.</p>
+  </section>
+
+  <section class="section">
+    <div class="rep-wrap">
+      <div id="login-gate" style="display:none;text-align:center;padding:40px;">
+        <p>Please <a href="admin.html">log in</a> to view your dashboard.</p>
+      </div>
+
+      <div id="rep-content" style="display:none;">
+        <h2 style="color:var(--color-navy);">Commissions summary</h2>
+        <div class="rep-grid" id="comm-summary"></div>
+
+        <h2 style="color:var(--color-navy);">My territories</h2>
+        <div id="territory-list"></div>
+
+        <h2 style="color:var(--color-navy);margin-top:24px;">Pipeline</h2>
+        <p style="color:var(--color-text-light);font-size:.9rem;">Drag a contact between stages to update.</p>
+        <div class="pipeline" id="pipeline"></div>
+
+        <h2 style="color:var(--color-navy);margin-top:24px;">Commission history</h2>
+        <div id="comm-list"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom">
+      <span>&copy; 2026 Local Heroes</span>
+    </div></div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/rep.js"></script>
+</body>
+</html>
