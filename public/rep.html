@@ -6,58 +6,119 @@
   <title>Sales Rep Dashboard - Local Heroes</title>
   <link rel="stylesheet" href="css/styles.css">
   <style>
-    .rep-wrap { max-width: 1300px; margin: 0 auto; padding: 20px; }
+    .rep-layout {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 280px 1fr 280px;
+      gap: 24px;
+      align-items: start;
+    }
+    .crm-info {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--color-gold);
+      border-radius: 14px;
+      padding: 20px;
+      color: var(--color-text);
+      backdrop-filter: blur(4px);
+      position: sticky;
+      top: 96px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    }
+    .crm-info h3 {
+      color: var(--color-gold);
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      letter-spacing: 0.05em;
+      margin: 0 0 6px;
+      text-transform: uppercase;
+    }
+    .crm-info .crm-sub {
+      color: var(--color-text-light);
+      font-size: 0.82rem;
+      margin-bottom: 14px;
+    }
+    .crm-info h4 {
+      color: var(--color-navy);
+      font-size: 0.95rem;
+      margin: 14px 0 6px;
+    }
+    .crm-info p, .crm-info li {
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: var(--color-text);
+    }
+    .crm-info ul { margin: 6px 0 10px 18px; }
+    .crm-info .crm-tag {
+      display: inline-block;
+      background: var(--color-gold);
+      color: var(--color-navy-dark);
+      font-weight: 700;
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .rep-wrap { max-width: 1300px; margin: 0 auto; padding: 0; }
+    @media (max-width: 1200px) {
+      .rep-layout { grid-template-columns: 1fr; }
+      .crm-info { position: static; }
+    }
+
     .rep-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 14px; margin-bottom: 20px; }
-    .rep-card { background: var(--color-bg-warm); padding: 16px; border-radius: 10px; box-shadow: var(--shadow-sm); }
+    .rep-card { background: var(--color-bg-warm); padding: 16px; border-radius: 10px; box-shadow: var(--shadow-sm); border-top: 3px solid var(--color-gold); }
     .rep-card h4 { margin: 0 0 6px; color: var(--color-navy); font-size: .95rem; }
     .rep-card .num { font-size: 1.8rem; font-weight: 800; color: var(--color-navy-dark); }
     .pipeline { display: grid; grid-template-columns: repeat(6,1fr); gap: 10px; margin-top: 20px; }
-    .stage { background: var(--color-bg-warm); border-radius: 10px; padding: 10px; min-height: 300px; }
+    .stage { background: var(--color-bg-warm); border-radius: 10px; padding: 10px; min-height: 300px; border-top: 3px solid var(--color-navy); }
     .stage h4 { margin: 0 0 10px; font-size: .85rem; text-transform: uppercase; color: var(--color-navy); text-align: center; }
     .contact-card { background: #fff; border-radius: 6px; padding: 8px; margin-bottom: 6px; cursor: grab; font-size: .82rem; box-shadow: var(--shadow-sm); }
     .contact-card.dragging { opacity: .4; }
     .contact-card .name { font-weight: 700; color: var(--color-navy); }
     .contact-card .meta { color: var(--color-text-light); font-size: .72rem; margin-top: 3px; }
-    .stage.drop-over { background: #e8eef9; }
+    .stage.drop-over { background: #fbead0; }
     table.rep-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: var(--shadow-sm); }
     table.rep-table th, table.rep-table td { padding: 10px 12px; border-bottom: 1px solid var(--color-border); text-align: left; font-size: .9rem; }
     table.rep-table th { background: var(--color-navy); color: #fff; }
     @media (max-width: 900px) { .pipeline { grid-template-columns: 1fr 1fr; } }
 
     /* Pitch Kit */
-    .pitch-wrap { background: #fff; border: 2px solid var(--color-navy); border-radius: 14px; padding: 0; margin-bottom: 32px; box-shadow: var(--shadow-md); overflow: hidden; }
-    .pitch-header { background: linear-gradient(135deg, var(--color-navy), var(--color-navy-dark)); color: #fff; padding: 18px 22px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-    .pitch-header h2 { color: #fff; margin: 0; font-size: 1.4rem; letter-spacing: .5px; }
+    .pitch-wrap { background: #fff; border: 2px solid var(--color-gold); border-radius: 14px; padding: 0; margin-bottom: 32px; box-shadow: var(--shadow-md); overflow: hidden; }
+    .pitch-header { background: linear-gradient(135deg, var(--color-navy), var(--color-navy-dark)); color: #fff; padding: 18px 22px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 3px solid var(--color-gold); }
+    .pitch-header h2 { color: var(--color-gold); margin: 0; font-size: 1.4rem; letter-spacing: .5px; }
     .pitch-header p { color: #ffe8e8; margin: 0; font-size: .88rem; }
     .pitch-tabs { display: flex; flex-wrap: wrap; background: var(--color-bg-warm); border-bottom: 1px solid var(--color-border); }
     .pitch-tab { flex: 1; min-width: 140px; padding: 14px 12px; background: transparent; border: 0; border-bottom: 3px solid transparent; cursor: pointer; font-weight: 600; color: var(--color-text-light); font-size: .92rem; transition: all .15s; }
     .pitch-tab:hover { color: var(--color-navy); }
-    .pitch-tab.active { color: var(--color-navy); border-bottom-color: var(--color-navy); background: #fff; }
+    .pitch-tab.active { color: var(--color-navy); border-bottom-color: var(--color-gold); background: #fff; }
     .pitch-panel { display: none; padding: 24px 28px; }
     .pitch-panel.active { display: block; }
     .pitch-panel h3 { color: var(--color-navy); margin: 0 0 12px; font-size: 1.15rem; }
     .pitch-panel h4 { color: var(--color-navy-dark); margin: 18px 0 6px; font-size: 1rem; }
     .pitch-panel ul { margin: 6px 0 14px 22px; }
     .pitch-panel li { margin-bottom: 6px; line-height: 1.5; }
-    .pitch-hook { background: var(--color-bg-warm); border-left: 4px solid var(--color-navy); padding: 12px 16px; margin: 14px 0; font-style: italic; font-size: .98rem; color: var(--color-navy-dark); }
+    .pitch-hook { background: var(--color-bg-warm); border-left: 4px solid var(--color-gold); padding: 12px 16px; margin: 14px 0; font-style: italic; font-size: .98rem; color: var(--color-navy-dark); }
     .case-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 12px; }
-    .case-card { background: var(--color-bg-warm); border-radius: 10px; padding: 18px; border-top: 4px solid var(--color-navy); }
+    .case-card { background: var(--color-bg-warm); border-radius: 10px; padding: 18px; border-top: 4px solid var(--color-gold); }
     .case-card .biz { font-weight: 800; color: var(--color-navy); font-size: 1.05rem; }
     .case-card .biz-sub { color: var(--color-text-light); font-size: .82rem; margin-bottom: 10px; }
     .case-card .metric { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed var(--color-border); font-size: .9rem; }
     .case-card .metric:last-of-type { border-bottom: 0; }
     .case-card .metric .val { font-weight: 700; color: var(--color-navy-dark); }
-    .case-card .quote { margin-top: 10px; font-style: italic; color: var(--color-text); font-size: .88rem; border-left: 3px solid var(--color-navy); padding-left: 10px; }
+    .case-card .quote { margin-top: 10px; font-style: italic; color: var(--color-text); font-size: .88rem; border-left: 3px solid var(--color-gold); padding-left: 10px; }
     .psych-row { display: grid; grid-template-columns: 180px 1fr; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--color-border); }
     .psych-row:last-of-type { border-bottom: 0; }
     .psych-row .principle { font-weight: 700; color: var(--color-navy); }
     .psych-row .principle small { display: block; color: var(--color-text-light); font-weight: 400; font-size: .78rem; margin-top: 2px; }
     .bottom-line-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 14px; margin-top: 12px; }
-    .bl-stat { background: var(--color-navy); color: #fff; padding: 18px; border-radius: 10px; text-align: center; }
-    .bl-stat .bignum { font-size: 2rem; font-weight: 800; display: block; margin-bottom: 4px; color: #fff; }
+    .bl-stat { background: linear-gradient(135deg, var(--color-navy), var(--color-navy-dark)); color: #fff; padding: 18px; border-radius: 10px; text-align: center; border: 1px solid var(--color-gold); }
+    .bl-stat .bignum { font-size: 2rem; font-weight: 800; display: block; margin-bottom: 4px; color: var(--color-gold); }
     .bl-stat .label { font-size: .82rem; opacity: .9; }
-    .copy-btn { background: var(--color-navy); color: #fff; border: 0; border-radius: 6px; padding: 6px 12px; font-size: .82rem; cursor: pointer; margin-left: 8px; }
-    .copy-btn:hover { background: var(--color-navy-dark); }
+    .copy-btn { background: var(--color-gold); color: var(--color-navy-dark); border: 0; border-radius: 6px; padding: 6px 12px; font-size: .82rem; cursor: pointer; margin-left: 8px; font-weight: 700; }
+    .copy-btn:hover { background: var(--color-gold-light); }
   </style>
 </head>
 <body>
@@ -81,7 +142,26 @@
   </section>
 
   <section class="section">
-    <div class="rep-wrap">
+    <div class="rep-layout">
+      <aside class="crm-info crm-left">
+        <span class="crm-tag">101</span>
+        <h3>What is a CRM?</h3>
+        <p class="crm-sub">Customer Relationship Management — the system of record for every prospect, deal, and follow-up a sales team touches.</p>
+
+        <h4>🗂️ Central Contact Hub</h4>
+        <p>Every business owner, phone call, email, and note lives in one place — so nothing slips between reps.</p>
+
+        <h4>📊 Pipeline Visibility</h4>
+        <p>Deals move through stages (Prospect → Contacted → Pitched → Signed). You always know what's hot, what's stalled, and what's about to close.</p>
+
+        <h4>⏰ Follow-up Engine</h4>
+        <p>Tasks, reminders, and cadences make sure no conversation dies on the vine. 80% of sales need 5+ touches — the CRM remembers, so you don't have to.</p>
+
+        <h4>📈 Forecasting</h4>
+        <p>Weighted-pipeline math turns "vibes" into a real revenue number for the month ahead.</p>
+      </aside>
+
+      <div class="rep-wrap">
       <div id="login-gate" style="display:none;text-align:center;padding:20px;background:#fff8e1;border:1px solid var(--color-navy-light);border-radius:10px;margin-bottom:24px;">
         <p style="margin:0;">👋 Sales rep? <a href="admin.html">Log in</a> or <a href="admin.html#signup">sign up</a> to access your dashboard, territories, and commissions. The Pitch & Demo Kit below is free to browse.</p>
       </div>
@@ -342,6 +422,27 @@
         <h2 style="color:var(--color-navy);margin-top:24px;">Commission history</h2>
         <div id="comm-list"></div>
       </div>
+      </div>
+      <aside class="crm-info crm-right">
+        <span class="crm-tag">Best Uses</span>
+        <h3>Where a CRM Wins</h3>
+        <p class="crm-sub">When it's doing its job, a CRM turns a scrappy sales effort into a repeatable machine.</p>
+
+        <h4>🎯 Territory Management</h4>
+        <p>Assign zipcodes to reps, prevent two reps hammering the same plumber, and see coverage gaps at a glance.</p>
+
+        <h4>🔁 Renewal & Retention</h4>
+        <p>Track who's renewing, who's wobbling, and who needs a check-in call before month's end. Retention is cheaper than acquisition.</p>
+
+        <h4>💬 Objection Playbooks</h4>
+        <p>Log every objection heard in the field. The CRM becomes a living library of "what works" — scripts, rebuttals, and winning phrases.</p>
+
+        <h4>💵 Commission Clarity</h4>
+        <p>Every closed deal is tied to the rep who earned it. Payouts are automatic, disputes disappear, and reps trust the math.</p>
+
+        <h4>🏆 Performance Coaching</h4>
+        <p>Spot which reps need help at which stage — and double down on the activities that actually move deals.</p>
+      </aside>
     </div>
   </section>
 
