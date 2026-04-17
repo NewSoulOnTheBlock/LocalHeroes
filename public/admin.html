@@ -25,22 +25,44 @@
 
   <!-- Login -->
   <div id="admin-login" class="admin-login">
-    <h2>Admin Login</h2>
+    <h2 id="auth-title">Salesperson Login</h2>
     <div class="star-divider"><span>&#9733;</span></div>
+
     <form id="login-form" style="margin-top:24px;">
       <div class="form-group">
+        <label>Username or Email</label>
+        <input type="text" name="username" id="login-username" autocomplete="username" required>
+      </div>
+      <div class="form-group">
         <label>Password</label>
-        <input type="password" name="password" id="admin-password" required>
+        <input type="password" name="password" id="login-password" autocomplete="current-password" required>
       </div>
       <button type="submit" class="btn btn-navy" style="width:100%;">Login</button>
       <div id="login-message"></div>
+      <p style="margin-top:18px;text-align:center;font-size:0.9rem;">
+        No account? <a href="#" id="show-signup" style="color:var(--color-rust);font-weight:600;">Sign up</a>
+      </p>
+    </form>
+
+    <form id="signup-form" style="margin-top:24px;display:none;">
+      <div class="form-group"><label>Full Name</label><input type="text" name="full_name" required></div>
+      <div class="form-group"><label>Username</label><input type="text" name="username" required></div>
+      <div class="form-group"><label>Email</label><input type="email" name="email"></div>
+      <div class="form-group"><label>Phone</label><input type="tel" name="phone"></div>
+      <div class="form-group"><label>Password (min 6 chars)</label><input type="password" name="password" minlength="6" required></div>
+      <div class="form-group"><label>Signup Code <span style="color:var(--color-text-light);font-size:0.8rem;">(if required)</span></label><input type="text" name="signup_code"></div>
+      <button type="submit" class="btn btn-navy" style="width:100%;">Create Account</button>
+      <div id="signup-message"></div>
+      <p style="margin-top:18px;text-align:center;font-size:0.9rem;">
+        Already have an account? <a href="#" id="show-login" style="color:var(--color-rust);font-weight:600;">Log in</a>
+      </p>
     </form>
   </div>
 
   <!-- Admin Dashboard -->
   <div id="admin-dashboard" class="admin-layout" style="display:none;">
     <div class="container">
-      <h1 style="margin-bottom:24px;">Admin Dashboard</h1>
+      <h1 style="margin-bottom:24px;">Sales Dashboard <span id="me-label" style="font-size:1rem;font-weight:400;color:var(--color-text-light);"></span></h1>
 
       <!-- Tabs -->
       <div class="admin-tabs">
@@ -51,10 +73,10 @@
         <button class="admin-tab" data-tab="crm-followups">Follow-Ups</button>
         <button class="admin-tab" data-tab="crm-calendar">Calendar</button>
         <button class="admin-tab" data-tab="crm-emails">Email</button>
-        <button class="admin-tab" data-tab="applications">Applications</button>
-        <button class="admin-tab" data-tab="businesses">Businesses</button>
-        <button class="admin-tab" data-tab="messages">Messages</button>
-        <button class="admin-tab" data-tab="zipcodes">Zipcodes</button>
+        <button class="admin-tab admin-only" data-tab="applications" style="display:none;">Applications</button>
+        <button class="admin-tab admin-only" data-tab="businesses" style="display:none;">Businesses</button>
+        <button class="admin-tab admin-only" data-tab="messages" style="display:none;">Messages</button>
+        <button class="admin-tab admin-only" data-tab="zipcodes" style="display:none;">Zipcodes</button>
       </div>
 
       <!-- CRM Dashboard Tab -->
@@ -207,6 +229,7 @@
               <th>Contact</th>
               <th>Phone</th>
               <th>Zipcode</th>
+              <th>Commission</th>
               <th>Status</th>
               <th>Last Call</th>
               <th>Next Follow-Up</th>

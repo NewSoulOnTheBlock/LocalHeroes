@@ -1,29 +1,77 @@
-/* Local Heroes - Admin Panel + CRM + Sales Desk JS */
+/* Local Heroes - Sales Panel JS (JWT auth) */
 
 let authToken = null;
+let currentUser = null;
 let calendarMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
 
 document.addEventListener('DOMContentLoaded', () => {
   const loginForm = document.getElementById('login-form');
+  const signupForm = document.getElementById('signup-form');
   const loginDiv = document.getElementById('admin-login');
   const dashboard = document.getElementById('admin-dashboard');
   const logoutBtn = document.getElementById('logout-btn');
 
-  const saved = sessionStorage.getItem('lh_admin');
-  if (saved) { authToken = saved; showDashboard(); }
+  // Toggle login <-> signup
+  document.getElementById('show-signup')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    loginForm.style.display = 'none'; signupForm.style.display = 'block';
+    document.getElementById('auth-title').textContent = 'Create Salesperson Account';
+  });
+  document.getElementById('show-login')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    signupForm.style.display = 'none'; loginForm.style.display = 'block';
+    document.getElementById('auth-title').textContent = 'Salesperson Login';
+  });
+
+  const savedToken = sessionStorage.getItem('lh_token') || localStorage.getItem('lh_token');
+  const savedUser  = sessionStorage.getItem('lh_user')  || localStorage.getItem('lh_user');
+  if (savedToken && savedUser) { authToken = savedToken; currentUser = JSON.parse(savedUser); showDashboard(); }
 
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const token = btoa('admin:' + document.getElementById('admin-password').value);
+    const username = document.getElementById('login-username').value;
+    const password = document.getElementById('login-password').value;
     try {
-      const res = await fetch('/api/admin/login', { method: 'POST', headers: { 'Authorization': 'Basic ' + token, 'Content-Type': 'application/json' } });
-      if (res.ok) { authToken = token; sessionStorage.setItem('lh_admin', token); showDashboard(); }
-      else { document.getElementById('login-message').innerHTML = '<div class="form-message error" style="margin-top:12px;">Invalid password.</div>'; }
+      const res = await fetch('/api/auth/login', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        authToken = data.token; currentUser = data.user;
+        localStorage.setItem('lh_token', authToken);
+        localStorage.setItem('lh_user', JSON.stringify(currentUser));
+        showDashboard();
+      } else {
+        document.getElementById('login-message').innerHTML = `<div class="form-message error" style="margin-top:12px;">${data.error || 'Invalid credentials.'}</div>`;
+      }
     } catch (err) { document.getElementById('login-message').innerHTML = '<div class="form-message error" style="margin-top:12px;">Connection error.</div>'; }
   });
 
+  signupForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target));
+    try {
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const body = await res.json();
+      if (res.ok) {
+        authToken = body.token; currentUser = body.user;
+        localStorage.setItem('lh_token', authToken);
+        localStorage.setItem('lh_user', JSON.stringify(currentUser));
+        showDashboard();
+      } else {
+        document.getElementById('signup-message').innerHTML = `<div class="form-message error" style="margin-top:12px;">${body.error || 'Signup failed.'}</div>`;
+      }
+    } catch (err) { document.getElementById('signup-message').innerHTML = '<div class="form-message error" style="margin-top:12px;">Connection error.</div>'; }
+  });
+
   logoutBtn.addEventListener('click', () => {
-    authToken = null; sessionStorage.removeItem('lh_admin');
+    authToken = null; currentUser = null;
+    localStorage.removeItem('lh_token'); localStorage.removeItem('lh_user');
+    sessionStorage.removeItem('lh_admin'); sessionStorage.removeItem('lh_token'); sessionStorage.removeItem('lh_user');
     dashboard.style.display = 'none'; loginDiv.style.display = 'block'; logoutBtn.style.display = 'none';
   });
 
@@ -124,8 +172,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function showDashboard() {
     loginDiv.style.display = 'none'; dashboard.style.display = 'block'; logoutBtn.style.display = 'inline-block';
+
+    // Label + admin-only tab visibility
+    const meLabel = document.getElementById('me-label');
+    if (meLabel && currentUser) {
+      meLabel.textContent = `— ${currentUser.full_name || currentUser.username}${currentUser.is_admin ? ' (admin)' : ''}`;
+    }
+    document.querySelectorAll('.admin-only').forEach(el => {
+      el.style.display = (currentUser && currentUser.is_admin) ? '' : 'none';
+    });
+
     loadCRMDashboard(); loadContacts(); loadFollowups('pending');
-    loadApplications('pending'); loadBusinesses(); loadMessages(); loadZipcodes();
+    if (currentUser && currentUser.is_admin) {
+      loadApplications('pending'); loadBusinesses(); loadMessages(); loadZipcodes();
+    }
   }
 
   // ==================== CRM DASHBOARD ====================
@@ -363,18 +423,30 @@ document.addEventListener('DOMContentLoaded', () => {
       let fuBadge = '';
       if (fuDate) { const today = new Date().toISOString().split('T')[0]; fuBadge = fuDate<today?`<span class="badge badge-overdue">${fuDate}</span>`:fuDate===today?`<span class="badge badge-due_today">${fuDate}</span>`:`<span class="badge badge-upcoming">${fuDate}</span>`; }
       else { fuBadge = '<span style="color:var(--color-text-light);font-size:0.85rem;">None</span>'; }
-      return `<tr>
+
+      const myId = currentUser ? currentUser.id : null;
+      const ownedByMe = c.commission_salesperson_id && myId && c.commission_salesperson_id === myId;
+      const ownedByOther = c.commission_salesperson_id && !ownedByMe;
+      const ownerBadge = c.commission_salesperson_id
+        ? (ownedByMe ? '<span class="badge badge-signed">You</span>' : `<span class="badge badge-pending">${esc(c.commission_username||'#'+c.commission_salesperson_id)}</span>`)
+        : '<span class="badge badge-new">Unclaimed</span>';
+
+      const canEdit = !ownedByOther || (currentUser && currentUser.is_admin);
+      const canDelete = currentUser && currentUser.is_admin;
+
+      return `<tr${ownedByOther?' style="opacity:0.6;"':''}>
         <td><strong style="cursor:pointer;color:var(--color-navy);" onclick="viewContact(${c.id})">${esc(c.business_name)}</strong></td>
         <td>${esc(c.contact_name||'-')}</td><td>${esc(c.phone||'-')}</td><td>${esc(c.zipcode||'-')}</td>
+        <td>${ownerBadge}</td>
         <td><span class="badge badge-${c.status}">${c.status.replace('_',' ')}</span></td>
         <td>${c.last_call_date?new Date(c.last_call_date).toLocaleDateString():'<span style="color:var(--color-text-light);font-size:0.85rem;">Never</span>'}</td>
         <td>${fuBadge}</td>
         <td style="white-space:nowrap;">
-          <button class="btn btn-secondary" style="padding:4px 10px;font-size:0.75rem;" onclick="openCallModal(${c.id},'${esc(c.business_name)}')">Call</button>
-          <button class="btn btn-navy" style="padding:4px 10px;font-size:0.75rem;" onclick="openContactModal(${c.id})">Edit</button>
-          <button class="btn btn-primary" style="padding:4px 10px;font-size:0.75rem;" onclick="deleteContact(${c.id})">Del</button>
+          ${canEdit?`<button class="btn btn-secondary" style="padding:4px 10px;font-size:0.75rem;" onclick="openCallModal(${c.id},'${esc(c.business_name)}')">Call</button>
+          <button class="btn btn-navy" style="padding:4px 10px;font-size:0.75rem;" onclick="openContactModal(${c.id})">Edit</button>`:''}
+          ${canDelete?`<button class="btn btn-primary" style="padding:4px 10px;font-size:0.75rem;" onclick="deleteContact(${c.id})">Del</button>`:''}
         </td></tr>`;
-    }).join('') : '<tr><td colspan="8" style="text-align:center;padding:24px;">No contacts yet.</td></tr>';
+    }).join('') : '<tr><td colspan="9" style="text-align:center;padding:24px;">No contacts yet.</td></tr>';
   }
 
   // ==================== FOLLOW-UPS ====================
@@ -551,9 +623,19 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==================== HELPERS ====================
   async function adminFetch(url, options = {}) {
     if (!options.headers) options.headers = {};
-    options.headers['Authorization'] = 'Basic ' + authToken;
-    try { const res = await fetch(url, options); if (res.status === 401 || res.status === 403) { authToken = null; sessionStorage.removeItem('lh_admin'); location.reload(); return null; } return await res.json(); }
-    catch (err) { return null; }
+    if (authToken) options.headers['Authorization'] = 'Bearer ' + authToken;
+    try {
+      const res = await fetch(url, options);
+      if (res.status === 401 || res.status === 403) {
+        if (res.status === 401) {
+          authToken = null; currentUser = null;
+          localStorage.removeItem('lh_token'); localStorage.removeItem('lh_user');
+          location.reload();
+        }
+        return null;
+      }
+      return await res.json();
+    } catch (err) { return null; }
   }
 
   function esc(str) { if (!str) return ''; const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }

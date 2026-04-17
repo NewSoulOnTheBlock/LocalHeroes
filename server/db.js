@@ -137,6 +137,28 @@ async function init() {
       body TEXT NOT NULL,
       created_at TIMESTAMPTZ DEFAULT NOW()
     );
+
+    CREATE TABLE IF NOT EXISTS salespeople (
+      id SERIAL PRIMARY KEY,
+      username TEXT UNIQUE NOT NULL,
+      email TEXT UNIQUE,
+      password_hash TEXT NOT NULL,
+      full_name TEXT,
+      phone TEXT,
+      is_admin INTEGER DEFAULT 0,
+      active INTEGER DEFAULT 1,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+  `);
+
+  // Additive columns for salesperson attribution (idempotent)
+  await pool.query(`
+    ALTER TABLE crm_contacts   ADD COLUMN IF NOT EXISTS commission_salesperson_id INTEGER REFERENCES salespeople(id);
+    ALTER TABLE crm_contacts   ADD COLUMN IF NOT EXISTS commission_claimed_at     TIMESTAMPTZ;
+    ALTER TABLE crm_calls      ADD COLUMN IF NOT EXISTS salesperson_id INTEGER REFERENCES salespeople(id);
+    ALTER TABLE crm_followups  ADD COLUMN IF NOT EXISTS salesperson_id INTEGER REFERENCES salespeople(id);
+    ALTER TABLE crm_activities ADD COLUMN IF NOT EXISTS salesperson_id INTEGER REFERENCES salespeople(id);
+    ALTER TABLE crm_emails_sent ADD COLUMN IF NOT EXISTS salesperson_id INTEGER REFERENCES salespeople(id);
   `);
 
   // Seed default email templates
