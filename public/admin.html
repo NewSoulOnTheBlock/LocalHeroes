@@ -97,7 +97,7 @@
         <button class="admin-tab admin-only" data-tab="territories" style="display:none;">Territories</button>
         <button class="admin-tab admin-only" data-tab="commissions" style="display:none;">Commissions</button>
         <button class="admin-tab admin-only" data-tab="referrals" style="display:none;">Referrals</button>
-        <button class="admin-tab admin-only" data-tab="heroes" style="display:none;">Heroes Blog</button>
+        <button class="admin-tab" data-tab="heroes">Heroes Blog</button>
       </div>
 
       <!-- CRM Dashboard Tab -->
@@ -730,8 +730,10 @@
 
         <div id="heroes-list" style="margin-bottom:32px;"></div>
 
-        <h3 style="margin-top:32px;">Recent Comments</h3>
-        <div id="heroes-comments-list"></div>
+        <div id="heroes-comments-section" class="admin-only" style="display:none;">
+          <h3 style="margin-top:32px;">Recent Comments <span style="font-size:.8rem;color:#888;font-weight:400;">(admin moderation)</span></h3>
+          <div id="heroes-comments-list"></div>
+        </div>
       </div>
     </div>
   </div>

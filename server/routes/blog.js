@@ -163,20 +163,35 @@ router.post('/posts/:slug/like', async (req, res) => {
 // ---------- ADMIN ----------
 const adminRouter = express.Router();
 adminRouter.use(salesAuth);
-adminRouter.use((req, res, next) => {
+// All authenticated salespeople can author posts; per-post ownership enforced below.
+// Comment moderation is admin-only via requireAdmin.
+
+function requireAdmin(req, res, next) {
   if (!req.salesperson || !req.salesperson.is_admin) {
     return res.status(403).json({ error: 'Admin only' });
   }
   next();
-});
+}
+
+async function canMutatePost(req, postId) {
+  if (req.salesperson.is_admin) return true;
+  const { rows } = await db.query('SELECT created_by FROM blog_posts WHERE id = $1', [postId]);
+  if (!rows.length) return null;
+  return rows[0].created_by === req.salesperson.id;
+}
 
 adminRouter.get('/posts', async (req, res) => {
   try {
-    const { rows } = await db.query(
-      `SELECT id, slug, title, excerpt, featured_image, author_name, tags, category,
-              status, publish_at, like_count, view_count, created_at, updated_at
-       FROM blog_posts ORDER BY created_at DESC`
-    );
+    const isAdmin = req.salesperson.is_admin;
+    const sql = `
+      SELECT p.id, p.slug, p.title, p.excerpt, p.featured_image, p.author_name, p.tags, p.category,
+             p.status, p.publish_at, p.like_count, p.view_count, p.created_at, p.updated_at,
+             p.created_by, s.full_name AS created_by_name
+      FROM blog_posts p
+      LEFT JOIN salespeople s ON s.id = p.created_by
+      ${isAdmin ? '' : 'WHERE p.created_by = $1'}
+      ORDER BY p.created_at DESC`;
+    const { rows } = await db.query(sql, isAdmin ? [] : [req.salesperson.id]);
     res.json(rows);
   } catch (err) { console.error(err); res.status(500).json({ error: err.message }); }
 });
@@ -185,6 +200,9 @@ adminRouter.get('/posts/:id', async (req, res) => {
   try {
     const { rows } = await db.query('SELECT * FROM blog_posts WHERE id = $1', [req.params.id]);
     if (!rows.length) return res.status(404).json({ error: 'Not found' });
+    if (!req.salesperson.is_admin && rows[0].created_by !== req.salesperson.id) {
+      return res.status(403).json({ error: 'You can only view your own draft posts.' });
+    }
     res.json(rows[0]);
   } catch (err) { console.error(err); res.status(500).json({ error: err.message }); }
 });
@@ -195,16 +213,18 @@ adminRouter.post('/posts', async (req, res) => {
     if (!b.title || !b.body_html) return res.status(400).json({ error: 'Title and body required' });
     const slug = await uniqueSlug(slugify(b.slug || b.title), null);
     const tags = Array.isArray(b.tags) ? b.tags : (b.tags ? String(b.tags).split(',').map(s => s.trim()).filter(Boolean) : []);
+    const sp = req.salesperson;
     const { rows } = await db.query(
       `INSERT INTO blog_posts
         (slug, title, excerpt, body_html, featured_image, author_name, author_bio, author_avatar,
-         tags, category, status, publish_at, seo_title, seo_description, og_image)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
+         tags, category, status, publish_at, seo_title, seo_description, og_image, created_by)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
        RETURNING *`,
       [slug, b.title, b.excerpt || null, b.body_html, b.featured_image || null,
-       b.author_name || 'Local Heroes Team', b.author_bio || null, b.author_avatar || null,
+       b.author_name || sp.full_name || sp.username || 'Local Heroes Team',
+       b.author_bio || null, b.author_avatar || null,
        tags, b.category || 'Spotlight', b.status || 'draft', b.publish_at || null,
-       b.seo_title || null, b.seo_description || null, b.og_image || null]
+       b.seo_title || null, b.seo_description || null, b.og_image || null, sp.id]
     );
     res.status(201).json(rows[0]);
   } catch (err) { console.error(err); res.status(500).json({ error: err.message }); }
@@ -213,6 +233,9 @@ adminRouter.post('/posts', async (req, res) => {
 adminRouter.put('/posts/:id', async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
+    const allowed = await canMutatePost(req, id);
+    if (allowed === null) return res.status(404).json({ error: 'Not found' });
+    if (!allowed) return res.status(403).json({ error: 'You can only edit your own posts.' });
     const b = req.body || {};
     const tags = Array.isArray(b.tags) ? b.tags : (b.tags ? String(b.tags).split(',').map(s => s.trim()).filter(Boolean) : []);
     let slug = b.slug ? slugify(b.slug) : null;
@@ -248,19 +271,23 @@ adminRouter.put('/posts/:id', async (req, res) => {
 
 adminRouter.delete('/posts/:id', async (req, res) => {
   try {
-    await db.query('DELETE FROM blog_posts WHERE id = $1', [req.params.id]);
+    const id = parseInt(req.params.id, 10);
+    const allowed = await canMutatePost(req, id);
+    if (allowed === null) return res.status(404).json({ error: 'Not found' });
+    if (!allowed) return res.status(403).json({ error: 'You can only delete your own posts.' });
+    await db.query('DELETE FROM blog_posts WHERE id = $1', [id]);
     res.json({ success: true });
   } catch (err) { console.error(err); res.status(500).json({ error: err.message }); }
 });
 
-// Image upload (featured image / inline)
+// Image upload (featured image / inline) — any authed sales user
 adminRouter.post('/upload', upload.single('image'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
   res.json({ url: '/images/uploads/' + req.file.filename });
 });
 
 // Admin comment moderation
-adminRouter.get('/comments', async (req, res) => {
+adminRouter.get('/comments', requireAdmin, async (req, res) => {
   try {
     const { rows } = await db.query(`
       SELECT c.*, p.title AS post_title, p.slug AS post_slug
@@ -270,7 +297,7 @@ adminRouter.get('/comments', async (req, res) => {
   } catch (err) { console.error(err); res.status(500).json({ error: err.message }); }
 });
 
-adminRouter.delete('/comments/:id', async (req, res) => {
+adminRouter.delete('/comments/:id', requireAdmin, async (req, res) => {
   try {
     await db.query('DELETE FROM blog_comments WHERE id = $1', [req.params.id]);
     res.json({ success: true });

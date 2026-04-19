@@ -88,11 +88,14 @@
   };
 
   window.loadHeroComments = async function () {
+    const section = document.getElementById('heroes-comments-section');
     const wrap = document.getElementById('heroes-comments-list');
     if (!wrap) return;
     let comments;
-    try { comments = await api('/api/blog/admin/comments'); } catch { return; }
+    try { comments = await api('/api/blog/admin/comments'); }
+    catch { if (section) section.style.display = 'none'; return; }
     if (!comments) return;
+    if (section) section.style.display = ''; // user is admin
     if (!comments.length) { wrap.innerHTML = '<p style="color:#888;">No comments yet.</p>'; return; }
     wrap.innerHTML = comments.slice(0, 50).map(c => `
       <div class="blog-comment" style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;">

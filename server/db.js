@@ -292,6 +292,7 @@ async function init() {
     ALTER TABLE crm_followups  ADD COLUMN IF NOT EXISTS salesperson_id INTEGER REFERENCES salespeople(id);
     ALTER TABLE crm_activities ADD COLUMN IF NOT EXISTS salesperson_id INTEGER REFERENCES salespeople(id);
     ALTER TABLE crm_emails_sent ADD COLUMN IF NOT EXISTS salesperson_id INTEGER REFERENCES salespeople(id);
+    ALTER TABLE blog_posts     ADD COLUMN IF NOT EXISTS created_by INTEGER REFERENCES salespeople(id);
   `);
 
   // Seed default email templates
