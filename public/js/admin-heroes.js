@@ -116,6 +116,99 @@
     try { await api('/api/blog/admin/comments/' + id, { method: 'DELETE' }); loadHeroComments(); } catch (e) { alert(e.message); }
   };
 
+  // ---- INTERVIEW KIT (25 questions) ----
+  const INTERVIEW_SECTIONS = [
+    { title: '🌱 Origin Story', questions: [
+      'What were you doing before you started this business — and what was the moment you decided to go for it?',
+      'Where did the name come from? Is there a story behind it?',
+      'What did the very first day, week, or sale feel like? Be specific — sights, sounds, nerves.',
+      'Who believed in you early on, and who didn\'t? How did that shape you?',
+      'What\'s one thing you wish someone had told you on day one?'
+    ]},
+    { title: '⚙️ The Craft', questions: [
+      'Walk me through your typical day from open to close — what\'s the rhythm?',
+      'What\'s the one detail in your product or service that customers usually don\'t notice but matters most to you?',
+      'Where do your ingredients, materials, or tools come from? Any local partnerships?',
+      'What\'s a skill you\'ve had to teach yourself the hard way?',
+      'If you had to demonstrate the heart of what you do in 60 seconds, what would you show?'
+    ]},
+    { title: '❤️ The Customers', questions: [
+      'Tell me about a customer who became a regular — what hooked them?',
+      'What\'s the most memorable thing a customer has ever said or done?',
+      'Have you ever had a customer in tears (good or bad)? What happened?',
+      'Who is your "perfect-fit" customer — and what should they know before walking in?',
+      'What\'s a misconception people have about your business that you\'d love to clear up?'
+    ]},
+    { title: '🛠️ Houston Roots', questions: [
+      'Why this neighborhood? What does it mean to you to be here specifically?',
+      'How has Houston (the people, the weather, the culture) shaped what you do?',
+      'Are there other local businesses you collaborate with, refer to, or just love?',
+      'What\'s your favorite thing about your block or zipcode that nobody talks about?',
+      'If a tourist had one hour in your neighborhood, where should they go?'
+    ]},
+    { title: '🌟 The Mission & The Future', questions: [
+      'When the day is hard, what keeps you going?',
+      'What does success look like for you 12 months from now? 5 years?',
+      'What\'s something you\'re proud of that nobody knows about?',
+      'How can the community support you beyond just buying from you?',
+      'If someone reads this story and walks through your door tomorrow — what do you want them to leave with?'
+    ]}
+  ];
+
+  function flattenQuestions() {
+    const lines = [];
+    let n = 1;
+    INTERVIEW_SECTIONS.forEach(sec => {
+      lines.push('');
+      lines.push(sec.title);
+      sec.questions.forEach(q => { lines.push(`${n}. ${q}`); n++; });
+    });
+    return lines.join('\n').trim();
+  }
+
+  window.openInterviewKit = function () {
+    const wrap = document.getElementById('interview-kit-content');
+    if (wrap) {
+      let n = 1;
+      wrap.innerHTML = INTERVIEW_SECTIONS.map(sec => `
+        <h3 style="color:var(--color-rust);margin:18px 0 8px;border-bottom:1px solid #f0e6dc;padding-bottom:6px;">${escapeHtml(sec.title)}</h3>
+        <ol start="${n}" style="line-height:1.7;color:#333;padding-left:22px;">
+          ${sec.questions.map(q => { const li = `<li style="margin-bottom:6px;">${escapeHtml(q)}</li>`; n++; return li; }).join('')}
+        </ol>
+      `).join('');
+    }
+    document.getElementById('modal-overlay').style.display = 'flex';
+    document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+    document.getElementById('modal-hero-interview').style.display = 'block';
+  };
+
+  window.copyInterviewQuestions = async function () {
+    const text = 'LOCAL HEROES — INTERVIEW QUESTIONS\n' + flattenQuestions();
+    try { await navigator.clipboard.writeText(text); alert('All 25 questions copied to clipboard.'); }
+    catch { prompt('Copy these questions:', text); }
+  };
+
+  window.copyInterviewEmail = async function () {
+    const text =
+`Subject: We'd love to feature you in a Local Heroes spotlight 🌟
+
+Hi [Owner Name],
+
+We'd like to write a Hero Spotlight feature about [Business Name] for LocalHeroes.com — a free way to share your story with thousands of households in your neighborhood.
+
+We'll handle the writing and publishing. All we need from you is some answers to the questions below — reply by email, or schedule a 30-minute call and we'll do the interview live.
+
+If you have a few photos (you, your space, your product), please send those too.
+
+` + flattenQuestions() + `
+
+Thanks for what you do for the neighborhood — looking forward to telling your story.
+
+— Local Heroes`;
+    try { await navigator.clipboard.writeText(text); alert('Email template copied to clipboard.'); }
+    catch { prompt('Copy this email:', text); }
+  };
+
   // ---- EDITOR MODAL ----
   let currentEditor = null;
 
