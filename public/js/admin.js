@@ -195,6 +195,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentUser && currentUser.is_admin) {
       loadApplications('pending'); loadBusinesses(); loadMessages(); loadZipcodes();
     }
+
+    // Deep-link tab via #hash (e.g. admin.html#heroes from public Editor Login button)
+    if (location.hash && location.hash.length > 1) {
+      const target = location.hash.slice(1);
+      const btn = document.querySelector(`.admin-tab[data-tab="${target}"]`);
+      if (btn && btn.offsetParent !== null) setTimeout(() => btn.click(), 0);
+    }
   }
 
   // ==================== CRM DASHBOARD ====================
