@@ -1,5 +1,26 @@
 /* Local Heroes — Houston, TX Brand Styles */
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Self-hosted Fontshare fonts */
+@font-face {
+  font-family: 'Gambetta';
+  src: url('../fonts/Gambetta-Regular.woff2') format('woff2'),
+       url('../fonts/Gambetta-Regular.woff') format('woff'),
+       url('../fonts/Gambetta-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'General Sans';
+  src: url('../fonts/GeneralSans-Semibold.woff2') format('woff2'),
+       url('../fonts/GeneralSans-Semibold.woff') format('woff'),
+       url('../fonts/GeneralSans-Semibold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+/* Inter retained as a fallback for body weights we don't have in General Sans */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
   /* Deep red palette (var names kept as "navy" for backward-compat) */
@@ -20,8 +41,8 @@
   --color-card: #FFFFFF;
   --color-success: #2D7A3A;
   --color-error: #C0392B;
-  --font-heading: 'Oswald', 'Impact', sans-serif;
-  --font-body: 'Inter', -apple-system, sans-serif;
+  --font-heading: 'Gambetta', 'Georgia', serif;
+  --font-body: 'General Sans', 'Inter', -apple-system, sans-serif;
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
   --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
   --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
