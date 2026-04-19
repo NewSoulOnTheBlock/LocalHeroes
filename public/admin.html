@@ -5,6 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin - Local Heroes</title>
   <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* Tab help/tip cards (used across CRM tabs) */
+    .tab-tips { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-bottom: 24px; }
+    .tab-tip { background: #fff; border: 1px solid var(--color-navy-light); border-left-width: 4px; border-radius: 10px; padding: 14px 16px; box-shadow: var(--shadow-sm); }
+    .tab-tip h4 { margin: 0 0 8px; color: var(--color-navy); font-size: .95rem; }
+    .tab-tip ul { margin: 0; padding-left: 18px; font-size: .85rem; line-height: 1.5; color: var(--color-text); }
+    .tab-tip p { margin: 0 0 6px; font-size: .85rem; line-height: 1.5; color: var(--color-text); }
+    .tab-tip .tip-foot { margin: 0; font-size: .8rem; color: var(--color-text-light); }
+    .tip-blue   { border-left-color: #1565C0; }
+    .tip-green  { border-left-color: #2E7D32; }
+    .tip-gold   { border-left-color: #D4A843; }
+    .tip-purple { border-left-color: #7B1FA2; }
+    .tip-red    { border-left-color: #B71C1C; }
+    .tip-navy   { border-left-color: var(--color-navy); }
+  </style>
 </head>
 <body>
 
@@ -84,6 +99,34 @@
 
       <!-- CRM Dashboard Tab -->
       <div id="tab-crm-dashboard" class="admin-tab-content">
+
+        <div class="tab-tips">
+          <div class="tab-tip tip-navy">
+            <h4>📊 What This Dashboard Shows</h4>
+            <ul>
+              <li><b>Stat tiles</b> — total leads, deals signed, pipeline value, calls made.</li>
+              <li><b>Overdue Follow-Ups</b> — anything you promised to do and haven't. Clear these first.</li>
+              <li><b>Today's Follow-Ups</b> — your commitments for today, in priority order.</li>
+            </ul>
+          </div>
+          <div class="tab-tip tip-red">
+            <h4>🔥 Start Your Day Here</h4>
+            <ul>
+              <li>Knock out <b>every overdue item</b> before opening a new tab.</li>
+              <li>Reschedule, don't ignore — leads remember being forgotten.</li>
+              <li>Aim for an <b>empty overdue list</b> by 10 AM every day.</li>
+            </ul>
+          </div>
+          <div class="tab-tip tip-gold">
+            <h4>🎯 The Daily Numbers Game</h4>
+            <ul>
+              <li><b>30 dial attempts</b> → ~5 conversations → ~1 booked next-step.</li>
+              <li><b>3 booked next-steps</b> per day = 1–2 closes per week.</li>
+              <li>Track activity, not feelings. The dashboard never lies.</li>
+            </ul>
+          </div>
+        </div>
+
         <div id="crm-stats" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:32px;"></div>
 
         <h3 style="margin-bottom:16px;">Overdue Follow-Ups</h3>
@@ -229,6 +272,36 @@
 
       <!-- CRM Daily Call List Tab -->
       <div id="tab-crm-calllist" class="admin-tab-content" style="display:none;">
+
+        <div class="tab-tips">
+          <div class="tab-tip tip-blue">
+            <h4>📞 What's in Your Call Queue</h4>
+            <ul>
+              <li>Auto-built every morning from <b>overdue follow-ups</b>, <b>cold leads</b>, and <b>scheduled callbacks</b>.</li>
+              <li>Click <b>Refresh</b> after logging calls to pull in the next batch.</li>
+              <li>Each call you log <b>auto-claims commission</b> on that lead — so dial first, brag later.</li>
+            </ul>
+          </div>
+          <div class="tab-tip tip-green">
+            <h4>🎙️ How to Dial Like a Pro</h4>
+            <ul>
+              <li><b>Stand up.</b> Voice carries authority when you're vertical.</li>
+              <li><b>Smile.</b> Yes — they hear it on the phone.</li>
+              <li><b>Pattern interrupt:</b> "Hey [Name] — I know you weren't expecting my call…"</li>
+              <li><b>Always end with a calendar invite</b>, never "I'll call you back."</li>
+            </ul>
+          </div>
+          <div class="tab-tip tip-red">
+            <h4>⚡ Power Hour Rules</h4>
+            <ul>
+              <li>Block <b>90 uninterrupted minutes</b>. Phone on Do Not Disturb. Email closed.</li>
+              <li>Goal: <b>30 dials</b> in that block. No exceptions.</li>
+              <li>If a call goes long, schedule the rest as a follow-up and keep dialing.</li>
+              <li>Voicemails count — leave a <b>15-second hook</b>, then text-follow-up.</li>
+            </ul>
+          </div>
+        </div>
+
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
           <h3>Today's Call Queue</h3>
           <button class="btn btn-navy" onclick="loadCallList()" style="padding:8px 16px;font-size:0.85rem;">Refresh</button>
@@ -238,6 +311,35 @@
 
       <!-- CRM Calendar Tab -->
       <div id="tab-crm-calendar" class="admin-tab-content" style="display:none;">
+
+        <div class="tab-tips">
+          <div class="tab-tip tip-purple">
+            <h4>📅 Reading the Calendar</h4>
+            <ul>
+              <li>Every <b>scheduled follow-up</b> shows on its due date.</li>
+              <li>Click any day to see all activities for that date.</li>
+              <li>Use <b>Prev / Next</b> to look ahead — busy weeks need pre-planning.</li>
+            </ul>
+          </div>
+          <div class="tab-tip tip-gold">
+            <h4>🗓️ Time-Blocking That Works</h4>
+            <ul>
+              <li><b>Mornings</b> for cold dials (decision-makers are at their desk).</li>
+              <li><b>Lunch (11–1)</b> for restaurant prospecting.</li>
+              <li><b>Afternoons</b> for emails, proposals, and Signed-paperwork chasing.</li>
+              <li><b>Friday 3 PM</b> = your weekly pipeline review. Move every card honestly.</li>
+            </ul>
+          </div>
+          <div class="tab-tip tip-blue">
+            <h4>🚦 Never Overbook Yourself</h4>
+            <ul>
+              <li>Cap follow-ups at <b>15 per day</b> — beyond that you can't keep promises.</li>
+              <li>Always leave <b>2 hours of buffer</b> for callbacks you didn't schedule.</li>
+              <li>If today is full, push the new follow-up to the next clear day.</li>
+            </ul>
+          </div>
+        </div>
+
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
           <button class="btn btn-navy" id="cal-prev" style="padding:8px 16px;">&larr; Prev</button>
           <h3 id="cal-title"></h3>
@@ -248,6 +350,36 @@
 
       <!-- CRM Email Tab -->
       <div id="tab-crm-emails" class="admin-tab-content" style="display:none;">
+
+        <div class="tab-tips">
+          <div class="tab-tip tip-navy">
+            <h4>✉️ How Email Templates Work</h4>
+            <ul>
+              <li>Pick a <b>template</b> on the left → it auto-fills Subject + Body.</li>
+              <li>Personalize <b>at least 1 sentence</b> before sending — copy-paste emails get deleted.</li>
+              <li>Sent emails are logged on the contact's history automatically.</li>
+            </ul>
+          </div>
+          <div class="tab-tip tip-green">
+            <h4>📬 Subject Lines That Get Opened</h4>
+            <ul>
+              <li><b>"Quick question about [Business Name]"</b> — curiosity + name.</li>
+              <li><b>"77007 Plumbing slot — yours or your competitor's?"</b> — scarcity.</li>
+              <li>Keep it under <b>40 characters</b>. No emojis in cold sends.</li>
+              <li><b>Never</b> say "Following up" — instant trash.</li>
+            </ul>
+          </div>
+          <div class="tab-tip tip-red">
+            <h4>🧨 Body Copy Rules</h4>
+            <ul>
+              <li><b>3 sentences max</b> on a cold email. Their thumb is on Delete.</li>
+              <li>End with <b>one</b> clear ask: "Got 10 min Thursday at 2?"</li>
+              <li>No attachments on first touch — they trigger spam filters.</li>
+              <li>Send between <b>Tue–Thu, 10am or 2pm</b> for best open rates.</li>
+            </ul>
+          </div>
+        </div>
+
         <div style="display:grid;grid-template-columns:280px 1fr;gap:24px;">
           <div>
             <h3 style="margin-bottom:16px;">Templates</h3>
@@ -278,6 +410,34 @@
 
       <!-- CRM Contacts Tab -->
       <div id="tab-crm-contacts" class="admin-tab-content" style="display:none;">
+
+        <div class="tab-tips">
+          <div class="tab-tip tip-blue">
+            <h4>📇 Working the Contact List</h4>
+            <ul>
+              <li><b>Search</b> by business name, contact, or phone — partial matches work.</li>
+              <li><b>Filter by status</b> to focus a single segment (e.g., all "Negotiating").</li>
+              <li>Click any row to open the full history; <b>+ Add Contact</b> for net-new prospects.</li>
+            </ul>
+          </div>
+          <div class="tab-tip tip-gold">
+            <h4>🔎 Lead Quality Beats Quantity</h4>
+            <ul>
+              <li>Before adding a lead, check it's a <b>category we sell</b> + a <b>zip we mail</b>.</li>
+              <li>Add the <b>decision-maker's name</b> if you have it — "manager" leads waste cycles.</li>
+              <li>Always log the <b>source</b> (referral, walk-in, list) — it tells you what's working.</li>
+            </ul>
+          </div>
+          <div class="tab-tip tip-purple">
+            <h4>🏷️ Commission Claim Rules</h4>
+            <ul>
+              <li>The <b>first salesperson to log a call</b> on a lead claims commission permanently.</li>
+              <li>Once claimed, only that rep (or admin) can edit the lead.</li>
+              <li>Don't poach — if a lead is owned, ask the owner to hand it off properly.</li>
+            </ul>
+          </div>
+        </div>
+
         <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center;">
           <input type="text" id="crm-search" placeholder="Search businesses, contacts, phone..." style="flex:1;min-width:200px;padding:10px 14px;border:2px solid var(--color-border);border-radius:var(--radius);font-family:var(--font-body);">
           <select id="crm-status-filter" style="padding:10px 14px;border:2px solid var(--color-border);border-radius:var(--radius);font-family:var(--font-body);">
@@ -313,6 +473,35 @@
 
       <!-- CRM Follow-Ups Tab -->
       <div id="tab-crm-followups" class="admin-tab-content" style="display:none;">
+
+        <div class="tab-tips">
+          <div class="tab-tip tip-navy">
+            <h4>🔁 What Counts as a Follow-Up</h4>
+            <ul>
+              <li>Anything you <b>promised</b> to do — call back, send pricing, deliver samples.</li>
+              <li>Tabs: <b>Upcoming</b> (active queue), <b>Completed</b> (history), <b>All</b> (audit).</li>
+              <li>Mark <b>Complete</b> the moment you do it — keeps the calendar honest.</li>
+            </ul>
+          </div>
+          <div class="tab-tip tip-green">
+            <h4>🧠 The 24/72/7 Rule</h4>
+            <ul>
+              <li><b>24 hours:</b> first follow-up after any meeting or pitch.</li>
+              <li><b>72 hours:</b> second touch — bring a new angle, not a "checking in."</li>
+              <li><b>7 days:</b> final touch with a soft deadline ("I'll close out the file Friday").</li>
+              <li>Then move to <b>90-day re-pitch</b> — never burn a lead with begging.</li>
+            </ul>
+          </div>
+          <div class="tab-tip tip-red">
+            <h4>⛔ Don't Let Follow-Ups Pile Up</h4>
+            <ul>
+              <li>Overdue items <b>destroy your dashboard</b> — and your credibility.</li>
+              <li>If you can't keep a promise, <b>reschedule</b> it before its due time, not after.</li>
+              <li>End every day with this list <b>at zero</b>. No exceptions.</li>
+            </ul>
+          </div>
+        </div>
+
         <div style="display:flex;gap:8px;margin-bottom:20px;">
           <button class="btn btn-primary crm-fu-filter active" data-fu-filter="pending" style="padding:8px 16px;font-size:0.85rem;">Upcoming</button>
           <button class="btn btn-secondary crm-fu-filter" data-fu-filter="completed" style="padding:8px 16px;font-size:0.85rem;">Completed</button>
