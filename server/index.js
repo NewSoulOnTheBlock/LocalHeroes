@@ -26,6 +26,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/slots', require('./routes/slots'));
 app.use('/api/referrals', require('./routes/referrals'));
 app.use('/api/territories', require('./routes/territories'));
+app.use('/api/blog', require('./routes/blog'));
 
 // Zipcodes public endpoint
 const db = require('./db');

@@ -95,6 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (tab.dataset.tab === 'territories') loadTerritories();
       if (tab.dataset.tab === 'commissions') loadCommissions();
       if (tab.dataset.tab === 'referrals') loadReferralsAdmin();
+      if (tab.dataset.tab === 'heroes' && typeof loadHeroPosts === 'function') { loadHeroPosts(); loadHeroComments(); }
     });
   });
 

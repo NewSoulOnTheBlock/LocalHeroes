@@ -225,6 +225,53 @@ async function init() {
     );
   `);
 
+  // Blog (Heroes) tables
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS blog_posts (
+      id SERIAL PRIMARY KEY,
+      slug TEXT UNIQUE NOT NULL,
+      title TEXT NOT NULL,
+      excerpt TEXT,
+      body_html TEXT NOT NULL,
+      featured_image TEXT,
+      author_name TEXT DEFAULT 'Local Heroes Team',
+      author_bio TEXT,
+      author_avatar TEXT,
+      tags TEXT[] DEFAULT '{}',
+      category TEXT DEFAULT 'Spotlight',
+      status TEXT NOT NULL DEFAULT 'draft',
+      publish_at TIMESTAMPTZ,
+      seo_title TEXT,
+      seo_description TEXT,
+      og_image TEXT,
+      like_count INTEGER NOT NULL DEFAULT 0,
+      view_count INTEGER NOT NULL DEFAULT 0,
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+    );
+    CREATE INDEX IF NOT EXISTS idx_blog_posts_status_publish ON blog_posts(status, publish_at);
+    CREATE INDEX IF NOT EXISTS idx_blog_posts_slug ON blog_posts(slug);
+
+    CREATE TABLE IF NOT EXISTS blog_comments (
+      id SERIAL PRIMARY KEY,
+      post_id INTEGER NOT NULL REFERENCES blog_posts(id) ON DELETE CASCADE,
+      author_name TEXT NOT NULL,
+      author_email TEXT,
+      body TEXT NOT NULL,
+      approved BOOLEAN NOT NULL DEFAULT TRUE,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+    CREATE INDEX IF NOT EXISTS idx_blog_comments_post ON blog_comments(post_id, created_at);
+
+    CREATE TABLE IF NOT EXISTS blog_likes (
+      id SERIAL PRIMARY KEY,
+      post_id INTEGER NOT NULL REFERENCES blog_posts(id) ON DELETE CASCADE,
+      ip TEXT NOT NULL,
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      UNIQUE (post_id, ip)
+    );
+  `);
+
   // Additive columns on pre-existing tables (idempotent)
   await pool.query(`
     ALTER TABLE zipcodes   ADD COLUMN IF NOT EXISTS household_count   INTEGER DEFAULT 3500;

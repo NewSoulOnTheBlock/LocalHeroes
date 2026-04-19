@@ -97,6 +97,7 @@
         <button class="admin-tab admin-only" data-tab="territories" style="display:none;">Territories</button>
         <button class="admin-tab admin-only" data-tab="commissions" style="display:none;">Commissions</button>
         <button class="admin-tab admin-only" data-tab="referrals" style="display:none;">Referrals</button>
+        <button class="admin-tab admin-only" data-tab="heroes" style="display:none;">Heroes Blog</button>
       </div>
 
       <!-- CRM Dashboard Tab -->
@@ -681,6 +682,57 @@
           <tbody id="referrals-table"></tbody>
         </table>
       </div>
+
+      <!-- Heroes Blog tab -->
+      <div id="tab-heroes" class="admin-tab-content" style="display:none;">
+
+        <div class="tab-tips">
+          <div class="tab-tip tip-gold">
+            <h4>📝 What This Is</h4>
+            <ul>
+              <li>The <b>Heroes Blog</b> is your public spotlight for customer wins and local-business stories.</li>
+              <li>Drafts stay private. <b>Published</b> posts appear instantly on <code>/heroes.html</code>.</li>
+              <li>You can also <b>schedule</b> a post — just set publish date in the future.</li>
+            </ul>
+          </div>
+          <div class="tab-tip tip-blue">
+            <h4>🎯 Story Recipe That Wins</h4>
+            <ul>
+              <li><b>Title:</b> Person + Outcome ("How Maria's Bakery Tripled Saturday Walk-Ins").</li>
+              <li><b>Excerpt:</b> One sentence of curiosity for the card preview.</li>
+              <li><b>Body:</b> 400–700 words. Hook → struggle → what they tried → result → CTA.</li>
+              <li>One <b>great photo</b> beats five mediocre ones.</li>
+            </ul>
+          </div>
+          <div class="tab-tip tip-green">
+            <h4>🚀 Make It Findable</h4>
+            <ul>
+              <li>Always set <b>SEO Title + Description</b> — that's what shows on Google.</li>
+              <li>Add 3–5 <b>tags</b> (zipcode, category, postcard, success).</li>
+              <li>Re-share new posts on socials within 24 hours of publishing.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+          <div>
+            <button class="btn btn-primary" onclick="openHeroPostModal()">+ New Story</button>
+            <button class="btn btn-secondary" onclick="loadHeroPosts()" style="margin-left:8px;">Refresh</button>
+          </div>
+          <div>
+            <select id="heroes-filter" style="padding:8px 12px;border-radius:8px;border:1px solid var(--color-navy-light);">
+              <option value="">All statuses</option>
+              <option value="draft">Drafts</option>
+              <option value="published">Published</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="heroes-list" style="margin-bottom:32px;"></div>
+
+        <h3 style="margin-top:32px;">Recent Comments</h3>
+        <div id="heroes-comments-list"></div>
+      </div>
     </div>
   </div>
 
@@ -844,8 +896,135 @@
       </div>
       <div id="detail-content"></div>
     </div>
+
+    <!-- Heroes Blog Post Editor Modal -->
+    <div id="modal-hero-post" class="modal" style="display:none;max-width:920px;">
+      <div class="modal-header">
+        <h3 id="hero-modal-title">New Hero Story</h3>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <form id="hero-post-form">
+        <input type="hidden" id="hero-post-id">
+
+        <div class="form-row">
+          <div class="form-group" style="flex:2;">
+            <label class="required">Title</label>
+            <input type="text" id="hero-title" required maxlength="200">
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label>Slug <small style="color:#888;">(URL — auto from title)</small></label>
+            <input type="text" id="hero-slug" placeholder="auto">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Excerpt <small style="color:#888;">(1-2 sentence summary for cards)</small></label>
+          <textarea id="hero-excerpt" rows="2" maxlength="280"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Featured Image</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="text" id="hero-featured-image" placeholder="/images/uploads/...">
+            <input type="file" id="hero-image-upload" accept="image/*" style="display:none;">
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('hero-image-upload').click()">Upload</button>
+          </div>
+          <div id="hero-image-preview" style="margin-top:8px;"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="required">Body</label>
+          <div class="heroes-editor-toolbar">
+            <button type="button" data-cmd="bold" title="Bold"><b>B</b></button>
+            <button type="button" data-cmd="italic" title="Italic"><i>I</i></button>
+            <button type="button" data-cmd="underline" title="Underline"><u>U</u></button>
+            <button type="button" data-cmd="formatBlock" data-arg="h2" title="Heading 2">H2</button>
+            <button type="button" data-cmd="formatBlock" data-arg="h3" title="Heading 3">H3</button>
+            <button type="button" data-cmd="formatBlock" data-arg="p" title="Paragraph">P</button>
+            <button type="button" data-cmd="insertUnorderedList" title="Bulleted list">• List</button>
+            <button type="button" data-cmd="insertOrderedList" title="Numbered list">1. List</button>
+            <button type="button" data-cmd="formatBlock" data-arg="blockquote" title="Quote">❝</button>
+            <button type="button" data-cmd="createLink" title="Link">🔗</button>
+            <button type="button" data-cmd="insertImage" title="Image">🖼</button>
+            <button type="button" data-cmd="removeFormat" title="Clear formatting">⟲</button>
+          </div>
+          <div id="hero-body-editor" class="heroes-editor" contenteditable="true"></div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Category</label>
+            <select id="hero-category">
+              <option value="Spotlight">Spotlight</option>
+              <option value="Customer Story">Customer Story</option>
+              <option value="Behind the Scenes">Behind the Scenes</option>
+              <option value="Neighborhood">Neighborhood</option>
+              <option value="Tips & How-To">Tips & How-To</option>
+              <option value="News">News</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Tags <small style="color:#888;">(comma-separated)</small></label>
+            <input type="text" id="hero-tags" placeholder="77007, restaurant, success">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Status</label>
+            <select id="hero-status">
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Publish Date <small style="color:#888;">(future = scheduled)</small></label>
+            <input type="datetime-local" id="hero-publish-at">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Author Name</label>
+            <input type="text" id="hero-author-name" placeholder="Local Heroes Team">
+          </div>
+          <div class="form-group">
+            <label>Author Avatar URL</label>
+            <input type="text" id="hero-author-avatar" placeholder="/images/uploads/...">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Author Bio</label>
+          <textarea id="hero-author-bio" rows="2" maxlength="280"></textarea>
+        </div>
+
+        <h4 style="margin-top:24px;border-top:1px solid var(--color-navy-light);padding-top:16px;">SEO</h4>
+        <div class="form-group">
+          <label>SEO Title</label>
+          <input type="text" id="hero-seo-title" maxlength="120">
+        </div>
+        <div class="form-group">
+          <label>SEO Description</label>
+          <textarea id="hero-seo-description" rows="2" maxlength="200"></textarea>
+        </div>
+        <div class="form-group">
+          <label>OG Image URL <small style="color:#888;">(falls back to featured image)</small></label>
+          <input type="text" id="hero-og-image">
+        </div>
+
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+          <button type="button" class="btn btn-secondary" onclick="saveHeroPost('draft')">Save Draft</button>
+          <button type="submit" class="btn btn-primary">Save & Publish</button>
+        </div>
+      </form>
+    </div>
+
   </div>
 
+  <link rel="stylesheet" href="css/blog.css">
   <script src="js/admin.js"></script>
+  <script src="js/admin-heroes.js"></script>
 </body>
 </html>

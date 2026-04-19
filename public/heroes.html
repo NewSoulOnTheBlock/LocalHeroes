@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Find the best local businesses in your Houston zipcode. Search Local Heroes featured in your neighborhood.">
-  <title>Find Local Heroes - Search Your Houston Zipcode</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <meta name="description" content="Heroes — stories, spotlights, and customer wins from Houston's best local businesses.">
+  <title>Heroes - Local Business Stories | Local Heroes Houston</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="stylesheet" href="css/styles.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/blog.css">
 </head>
 <body>
 
@@ -25,7 +27,7 @@
           <li><a href="index.html">Home</a></li>
           <li><a href="how-it-works.html">How It Works</a></li>
           <li><a href="pricing.html">Pricing</a></li>
-          <li><a href="heroes.html">Heroes</a></li>
+          <li><a href="heroes.html" class="active">Heroes</a></li>
           <li><a href="about.html">About</a></li>
           <li><a href="contact.html">Contact</a></li>
           <li><a href="apply.html" class="btn btn-primary">Become A Local Hero</a></li>
@@ -34,49 +36,27 @@
     </div>
   </header>
 
-  <!-- Page Hero -->
   <section class="page-hero">
-    <h1>Find Local Heroes</h1>
-    <p>Discover the best businesses featured in your Houston neighborhood.</p>
+    <h1>Heroes</h1>
+    <p>Stories, spotlights & wins from Houston's best local businesses.</p>
   </section>
 
-  <!-- Search Section -->
-  <section class="section">
+  <section class="section" style="padding-top:32px;">
     <div class="container">
-      <div class="zip-lookup" style="margin-bottom:48px;">
-        <div class="zip-input-group">
-          <input type="text" id="zip-input" placeholder="Enter your Houston zipcode (e.g., 77007)" maxlength="5" pattern="[0-9]{5}">
-          <button class="btn btn-primary" id="zip-search-btn">Search</button>
-        </div>
+
+      <div class="blog-toolbar">
+        <input type="search" id="blog-search" class="blog-search" placeholder="Search stories…">
+        <div id="blog-tags" class="blog-tags"></div>
       </div>
 
-      <!-- Active Zipcodes -->
-      <div id="zip-grid" style="margin-bottom:48px;">
-        <h3 style="margin-bottom:16px;">Or browse by neighborhood:</h3>
-        <div id="zipcode-list" class="card-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr));"></div>
+      <div id="blog-grid" class="blog-grid">
+        <p class="blog-loading">Loading stories…</p>
       </div>
 
-      <!-- Results -->
-      <div id="search-results" class="zip-results" style="display:none;">
-        <h2 id="results-title" style="margin-bottom:8px;"></h2>
-        <p id="results-subtitle" style="color:var(--color-text-light);margin-bottom:32px;"></p>
-        <div id="results-grid" class="card-grid"></div>
+      <div id="blog-empty" class="blog-empty" style="display:none;">
+        <h3>No stories yet</h3>
+        <p>The first hero spotlight is on its way. Check back soon!</p>
       </div>
-
-      <div id="no-results" class="zip-no-results" style="display:none;">
-        <h3>No businesses found for this zipcode yet.</h3>
-        <p style="margin:12px 0 24px;">Know a great business here? Tell them to <a href="apply.html" style="color:var(--color-rust);font-weight:600;">become a Local Hero</a>!</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section class="section-dark section">
-    <div class="container text-center">
-      <h2 style="color:var(--color-white);">Own a Business in Houston?</h2>
-      <div class="star-divider"><span>&#9733;</span></div>
-      <p style="max-width:500px;margin:0 auto 24px;color:rgba(255,255,255,0.75);">Get featured on the next postcard going out to your neighborhood.</p>
-      <a href="apply.html" class="btn btn-primary btn-lg">Become A Local Hero</a>
     </div>
   </section>
 
@@ -86,7 +66,7 @@
       <div class="footer-grid">
         <div>
           <h4><span style="color:var(--color-gold);">&#9733;</span> Local Heroes</h4>
-          <p>Houston's premier EDDM postcard advertising platform. We connect the best local businesses with every household in their neighborhood.</p>
+          <p>Houston's premier EDDM postcard advertising platform.</p>
         </div>
         <div>
           <h4>For Businesses</h4>
@@ -101,6 +81,7 @@
           <ul class="footer-links">
             <li><a href="find.html">Find Local Heroes</a></li>
             <li><a href="map.html">Coverage Map</a></li>
+            <li><a href="heroes.html">Heroes Blog</a></li>
             <li><a href="about.html">About Us</a></li>
             <li><a href="contact.html">Contact</a></li>
           </ul>
@@ -123,5 +104,6 @@
   </footer>
 
   <script src="js/main.js"></script>
+  <script src="js/blog-public.js"></script>
 </body>
 </html>
