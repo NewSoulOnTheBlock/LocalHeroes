@@ -119,6 +119,74 @@
 
       <!-- CRM Pipeline/Kanban Tab -->
       <div id="tab-crm-pipeline" class="admin-tab-content" style="display:none;">
+
+        <!-- Help & coaching boxes -->
+        <div class="pipeline-help" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:24px;">
+
+          <div style="background:#fff;border:1px solid var(--color-navy-light);border-left:4px solid var(--color-navy);border-radius:10px;padding:14px 16px;box-shadow:var(--shadow-sm);">
+            <h4 style="margin:0 0 8px;color:var(--color-navy);font-size:.95rem;">🟦 How the Pipeline Works</h4>
+            <ul style="margin:0;padding-left:18px;font-size:.85rem;line-height:1.5;color:var(--color-text);">
+              <li><b>Drag a card</b> from one stage to the next as the deal progresses.</li>
+              <li>The number in each header is your live count for that stage.</li>
+              <li>Click any card to open its full history (calls, follow-ups, notes).</li>
+              <li>Use <b>Call</b> / <b>Email</b> buttons to take action without leaving this view.</li>
+            </ul>
+          </div>
+
+          <div style="background:#fff;border:1px solid var(--color-navy-light);border-left:4px solid #2E7D32;border-radius:10px;padding:14px 16px;box-shadow:var(--shadow-sm);">
+            <h4 style="margin:0 0 8px;color:var(--color-navy);font-size:.95rem;">🟩 What Each Stage Means</h4>
+            <ul style="margin:0;padding-left:18px;font-size:.85rem;line-height:1.5;color:var(--color-text);">
+              <li><b>New</b> — never contacted. Start here.</li>
+              <li><b>Contacted</b> — left a voicemail / sent intro email.</li>
+              <li><b>Interested</b> — they engaged. Book a real conversation.</li>
+              <li><b>Negotiating</b> — pricing, dates, or category exclusivity in play.</li>
+              <li><b>Signed</b> — application submitted &amp; payment cleared.</li>
+              <li><b>Lost</b> — disqualified or said no. Re-pitch in 90 days.</li>
+            </ul>
+          </div>
+
+          <div style="background:#fff;border:1px solid var(--color-navy-light);border-left:4px solid #D4A843;border-radius:10px;padding:14px 16px;box-shadow:var(--shadow-sm);">
+            <h4 style="margin:0 0 8px;color:var(--color-navy);font-size:.95rem;">🥇 Daily Sales Habits</h4>
+            <ul style="margin:0;padding-left:18px;font-size:.85rem;line-height:1.5;color:var(--color-text);">
+              <li><b>Block 90 minutes</b> for cold dials before email.</li>
+              <li>Make <b>30 dial attempts</b> a day — you'll get ~5 conversations.</li>
+              <li>Always book the <b>next step on the call</b>, never "I'll follow up."</li>
+              <li>Move a card the moment something changes — keep the board honest.</li>
+              <li>End every day with <b>tomorrow's call list</b> already loaded.</li>
+            </ul>
+          </div>
+
+          <div style="background:#fff;border:1px solid var(--color-navy-light);border-left:4px solid #7B1FA2;border-radius:10px;padding:14px 16px;box-shadow:var(--shadow-sm);">
+            <h4 style="margin:0 0 8px;color:var(--color-navy);font-size:.95rem;">🧠 Pro Tips That Close Deals</h4>
+            <ul style="margin:0;padding-left:18px;font-size:.85rem;line-height:1.5;color:var(--color-text);">
+              <li><b>Lead with scarcity:</b> "Only one [category] per zipcode — your competitor is on my list too."</li>
+              <li><b>Anchor high, deliver value:</b> mention the postcard print &amp; postage cost <i>before</i> the price.</li>
+              <li><b>Talk neighbors, not customers</b> — every household, every month.</li>
+              <li><b>Mirror, don't pitch:</b> repeat their last 3 words and let them keep talking.</li>
+              <li><b>Assume the close:</b> "Want me to lock 77007 Plumbing for May or June?"</li>
+            </ul>
+          </div>
+
+          <div style="background:#fff;border:1px solid var(--color-navy-light);border-left:4px solid #B71C1C;border-radius:10px;padding:14px 16px;box-shadow:var(--shadow-sm);">
+            <h4 style="margin:0 0 8px;color:var(--color-navy);font-size:.95rem;">🚫 Common Mistakes to Avoid</h4>
+            <ul style="margin:0;padding-left:18px;font-size:.85rem;line-height:1.5;color:var(--color-text);">
+              <li><b>Don't park leads in "Interested"</b> — if there's no scheduled next step, drag back to Contacted.</li>
+              <li><b>Don't pitch price first.</b> Always cost-of-doing-nothing first, price last.</li>
+              <li><b>Never leave a stage empty</b> — if New is empty, prospect more zipcodes today.</li>
+              <li><b>Don't argue with "Lost"</b> — log the reason, set a 90-day follow-up, move on.</li>
+            </ul>
+          </div>
+
+          <div style="background:#fff;border:1px solid var(--color-navy-light);border-left:4px solid #1565C0;border-radius:10px;padding:14px 16px;box-shadow:var(--shadow-sm);">
+            <h4 style="margin:0 0 8px;color:var(--color-navy);font-size:.95rem;">📞 The 60-Second Opener</h4>
+            <p style="margin:0 0 6px;font-size:.85rem;line-height:1.5;color:var(--color-text);">
+              <i>"Hi [Name], this is [You] with Local Heroes — we're the postcard that hits every door in [zip] every month. I'm not selling you anything yet; I just need 60 seconds to tell you why the [category] slot in your zipcode matters. Got a minute?"</i>
+            </p>
+            <p style="margin:0;font-size:.8rem;color:var(--color-text-light);">If yes → pitch. If no → "Best time tomorrow?" Always book the callback.</p>
+          </div>
+
+        </div>
+
         <div class="pipeline-board" id="pipeline-board">
           <div class="pipeline-col" data-status="new">
             <div class="pipeline-col-header" style="border-color:#1565C0;">
