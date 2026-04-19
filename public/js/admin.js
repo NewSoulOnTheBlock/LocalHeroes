@@ -554,6 +554,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <button class="btn btn-navy" style="padding:8px 16px;font-size:0.85rem;" onclick="closeModal();openContactModal(${c.id})">Edit</button>
         <button class="btn btn-primary" style="padding:8px 16px;font-size:0.85rem;" onclick="closeModal();openEmailForContact(${c.id})">Send Email</button>
         <button class="btn btn-outline" style="padding:8px 16px;font-size:0.85rem;color:var(--color-navy);border-color:var(--color-border);" onclick="addNote(${c.id})">Add Note</button>
+        <button class="btn btn-outline" style="padding:8px 16px;font-size:0.85rem;color:var(--color-navy);border-color:var(--color-border);" onclick="openContractFor(${c.id})">📄 Contract</button>
       </div>
       <h4 style="margin-bottom:16px;">Activity Timeline (${timeline.length})</h4>
       <div class="activity-timeline">
@@ -574,6 +575,24 @@ document.addEventListener('DOMContentLoaded', () => {
     await adminFetch('/api/crm/activities', { method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contact_id: contactId, title: 'Note added', detail: note }) });
     viewContact(contactId);
+  };
+
+  window.openContractFor = async function(contactId) {
+    const c = await adminFetch('/api/crm/contacts/' + contactId);
+    if (!c) return;
+    const params = new URLSearchParams();
+    if (c.business_name) params.set('business', c.business_name);
+    if (c.contact_name)  params.set('contact',  c.contact_name);
+    if (c.email)         params.set('email',    c.email);
+    if (c.phone)         params.set('phone',    c.phone);
+    if (c.address)       params.set('address',  c.address);
+    if (c.zipcode)       params.set('zipcodes', c.zipcode);
+    params.set('numzips', '1');
+    params.set('rate', '299');
+    params.set('total', '299');
+    if (currentUser && currentUser.full_name) params.set('rep', currentUser.full_name);
+    if (currentUser && currentUser.id) params.set('repid', String(currentUser.id));
+    window.open('contract.html?' + params.toString(), '_blank');
   };
 
   // ==================== MODAL FUNCTIONS ====================

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Local Heroes — Advertising Services Agreement</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body { background: #f3eee6; }
+    .contract-shell { max-width: 880px; margin: 24px auto; padding: 0 16px; }
+    .contract-toolbar {
+      background: var(--color-navy); color: #fff; padding: 14px 20px; border-radius: 10px 10px 0 0;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+    }
+    .contract-toolbar h1 { color: #fff; margin: 0; font-size: 1.3rem; }
+    .contract-toolbar .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .contract-toolbar button {
+      background: #fff; color: var(--color-navy); border: 0; padding: 8px 14px;
+      border-radius: 6px; font-weight: 600; cursor: pointer; font-family: inherit;
+    }
+    .contract-toolbar button:hover { background: var(--color-gold); }
+
+    .contract-page {
+      background: #fff; padding: 56px 64px; border-radius: 0 0 10px 10px;
+      box-shadow: 0 6px 24px rgba(0,0,0,.08); color: #222; line-height: 1.55;
+      font-family: var(--font-body);
+    }
+    .contract-header { text-align: center; border-bottom: 2px solid var(--color-navy); padding-bottom: 18px; margin-bottom: 28px; }
+    .contract-header .brand { font-family: var(--font-heading); color: var(--color-navy); font-size: 2rem; letter-spacing: .5px; }
+    .contract-header .sub  { color: #666; font-size: .95rem; margin-top: 4px; }
+    .contract-header h2 { font-family: var(--font-heading); color: var(--color-navy); margin: 12px 0 0; font-size: 1.5rem; }
+
+    .contract-page h3 {
+      font-family: var(--font-heading); color: var(--color-navy);
+      margin: 28px 0 8px; font-size: 1.15rem; border-bottom: 1px solid #eee; padding-bottom: 4px;
+    }
+    .contract-page p { margin: 8px 0; }
+    .contract-page ul, .contract-page ol { padding-left: 22px; }
+    .contract-page li { margin: 4px 0; }
+
+    .field {
+      display: inline-block; min-width: 180px; border-bottom: 1.5px solid #555;
+      padding: 1px 6px; font-weight: 600; color: var(--color-navy);
+    }
+    .field[contenteditable="true"]:empty::before {
+      content: attr(data-placeholder); color: #aaa; font-weight: 400;
+    }
+    .field[contenteditable="true"]:focus { outline: none; background: #fffbe6; }
+
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 32px; margin: 12px 0; }
+    .party-block { padding: 14px 16px; background: #faf7f1; border-left: 3px solid var(--color-gold); border-radius: 4px; }
+    .party-block h4 { margin: 0 0 8px; font-family: var(--font-heading); color: var(--color-navy); }
+    .party-block .row { margin: 4px 0; font-size: .95rem; }
+
+    .signature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 36px; }
+    .sig-block { border-top: 1.5px solid #333; padding-top: 8px; }
+    .sig-line { border-bottom: 1px solid #333; height: 36px; margin-bottom: 6px; }
+    .sig-meta { font-size: .85rem; color: #555; }
+
+    .small-print { font-size: .82rem; color: #555; line-height: 1.5; }
+
+    @media print {
+      body { background: #fff; }
+      .contract-toolbar, .no-print { display: none !important; }
+      .contract-page { box-shadow: none; padding: 32px 36px; border-radius: 0; }
+      .field { border-color: #000; color: #000; }
+      a { color: #000; text-decoration: none; }
+    }
+    @page { size: letter; margin: 0.6in; }
+  </style>
+</head>
+<body>
+
+<div class="contract-shell">
+  <div class="contract-toolbar no-print">
+    <h1>📄 Advertising Services Agreement</h1>
+    <div class="actions">
+      <button onclick="window.print()">🖨️ Print / Save PDF</button>
+      <button onclick="copyShareLink()">🔗 Copy Pre-filled Link</button>
+      <button onclick="window.close()">Close</button>
+    </div>
+  </div>
+
+  <div class="contract-page" id="contract">
+    <div class="contract-header">
+      <div class="brand">LOCAL HEROES</div>
+      <div class="sub">Houston EDDM Advertising · localheroes.com · (713) 555-0000</div>
+      <h2>Advertising Services Agreement</h2>
+    </div>
+
+    <p>This Advertising Services Agreement (the "<b>Agreement</b>") is entered into and effective as of
+      <span class="field" contenteditable="true" data-key="effective" data-placeholder="Effective Date"></span>
+      (the "<b>Effective Date</b>") by and between:</p>
+
+    <div class="grid">
+      <div class="party-block">
+        <h4>The Client (Advertiser)</h4>
+        <div class="row">Business: <span class="field" contenteditable="true" data-key="business" data-placeholder="Business Legal Name"></span></div>
+        <div class="row">Contact:  <span class="field" contenteditable="true" data-key="contact"  data-placeholder="Authorized Signer Name"></span></div>
+        <div class="row">Title:    <span class="field" contenteditable="true" data-key="title"    data-placeholder="Owner / Manager"></span></div>
+        <div class="row">Email:    <span class="field" contenteditable="true" data-key="email"    data-placeholder="email@business.com"></span></div>
+        <div class="row">Phone:    <span class="field" contenteditable="true" data-key="phone"    data-placeholder="(xxx) xxx-xxxx"></span></div>
+        <div class="row">Address:  <span class="field" contenteditable="true" data-key="address"  data-placeholder="Street, City, TX, ZIP"></span></div>
+      </div>
+      <div class="party-block">
+        <h4>The Service Provider</h4>
+        <div class="row"><b>Local Heroes EDDM, LLC</b></div>
+        <div class="row">Houston, Texas</div>
+        <div class="row">Email: hello@localheroes.com</div>
+        <div class="row">Phone: (713) 555-0000</div>
+        <div class="row">Sales Rep: <span class="field" contenteditable="true" data-key="rep" data-placeholder="Sales Rep Name"></span></div>
+        <div class="row">Rep ID:    <span class="field" contenteditable="true" data-key="repid" data-placeholder="Rep ID / Code"></span></div>
+      </div>
+    </div>
+
+    <h3>1. Services</h3>
+    <p>Local Heroes will provide the following advertising services (the "<b>Services</b>") to the Client:</p>
+    <ul>
+      <li><b>Custom postcard design</b> featuring the Client's business, logo, photos, and approved messaging.</li>
+      <li><b>Premium full-color printing</b> on glossy or matte card stock (provider's discretion).</li>
+      <li><b>USPS Every Door Direct Mail (EDDM) delivery</b> to every residential mailbox within the agreed ZIP Code(s).</li>
+      <li><b>Listing of the Client</b> on the public LocalHeroes.com directory for the duration of this Agreement.</li>
+      <li><b>Proof approval</b> sent to the Client at least 5 business days before each printing run.</li>
+    </ul>
+
+    <h3>2. Term & Mailing Cycle</h3>
+    <p>Service ZIP Code(s):
+      <span class="field" contenteditable="true" data-key="zipcodes" data-placeholder="77002, 77003"></span></p>
+    <p>Estimated households per cycle:
+      <span class="field" contenteditable="true" data-key="households" data-placeholder="3,500"></span></p>
+    <p>Mailing cadence: one (1) EDDM mailing per calendar month, per ZIP Code listed above.</p>
+    <p>First mailing month:
+      <span class="field" contenteditable="true" data-key="firstmonth" data-placeholder="Month YYYY"></span></p>
+    <p>This Agreement begins on the Effective Date and continues on a <b>month-to-month</b> basis until cancelled
+      in accordance with Section 6.</p>
+
+    <h3>3. Fees & Payment</h3>
+    <p>Monthly fee per ZIP Code: <b>$<span class="field" contenteditable="true" data-key="rate" data-placeholder="299">299</span>.00 USD</b></p>
+    <p>Number of ZIP Codes: <span class="field" contenteditable="true" data-key="numzips" data-placeholder="1">1</span></p>
+    <p><b>Total monthly fee: $<span class="field" contenteditable="true" data-key="total" data-placeholder="299">299</span>.00 USD</b>, billed in advance on or about the 1st of each month.</p>
+    <ul>
+      <li>Payment method: credit/debit card on file, or ACH/invoice as agreed in writing.</li>
+      <li>The Client authorizes Local Heroes to charge the payment method on file each billing cycle until cancellation.</li>
+      <li>Failed payments: a 7-day grace period applies. After 7 days, the Client's slot may be released and the next cycle's mailing forfeited.</li>
+      <li>All fees are <b>non-refundable</b> once a printing run for the corresponding cycle has begun.</li>
+      <li>Setup fee: <span class="field" contenteditable="true" data-key="setup" data-placeholder="$0">$0</span> (one-time, if applicable).</li>
+    </ul>
+
+    <h3>4. Client Responsibilities</h3>
+    <ul>
+      <li>Provide accurate business information, logo files, and any photos or copy required for the design.</li>
+      <li>Review and approve (or request revisions to) the proof within 3 business days of receipt. Failure to respond will be treated as approval to print.</li>
+      <li>Ensure all submitted content is accurate, lawful, and free of third-party intellectual-property infringement.</li>
+      <li>Maintain a valid payment method on file.</li>
+    </ul>
+
+    <h3>5. Design, Revisions & Approvals</h3>
+    <p>The Client receives one (1) initial design proof per cycle and up to two (2) rounds of revisions at no additional cost.
+      Additional revisions, or design changes requested after a printing run has begun, may incur a flat $75 reprint/expedite fee.
+      Local Heroes retains creative control over postcard layout, including the placement of other featured Local Heroes businesses sharing the mailing.</p>
+
+    <h3>6. Cancellation</h3>
+    <ul>
+      <li>The Client may cancel at any time by giving written notice (email is acceptable) to <b>hello@localheroes.com</b>.</li>
+      <li>Cancellations received <b>at least 10 calendar days</b> before the next billing date take effect immediately and stop the next cycle.</li>
+      <li>Cancellations received within 10 days of the next billing date will take effect after the upcoming cycle, which is already in production. The corresponding fee is non-refundable.</li>
+      <li>Local Heroes may terminate this Agreement at any time for non-payment, content violations, or breach of these terms, with prorated refund of any unmailed cycles already paid.</li>
+    </ul>
+
+    <h3>7. Intellectual Property</h3>
+    <p>The Client retains all ownership of its trademarks, logos, and supplied content. The Client grants Local Heroes a non-exclusive,
+      royalty-free license to use, reproduce, and display such content solely for the purpose of producing and delivering the Services
+      and promoting the Client on the LocalHeroes.com directory and Local Heroes marketing materials.</p>
+    <p>Local Heroes retains ownership of the postcard design, layout, and any creative work product produced by Local Heroes.
+      Upon request and after at least one (1) full month of paid service, a high-resolution PDF of the Client's portion of the design
+      will be provided to the Client for the Client's own non-commercial use.</p>
+
+    <h3>8. Performance & Disclaimers</h3>
+    <p>Local Heroes does not guarantee any specific number of leads, calls, customers, sales, or revenue resulting from the Services.
+      EDDM delivery is performed by the United States Postal Service; Local Heroes is not responsible for USPS delivery delays,
+      damage in transit, or non-delivery to specific addresses.</p>
+
+    <h3>9. Limitation of Liability</h3>
+    <p>To the maximum extent permitted by law, Local Heroes' total aggregate liability arising out of or relating to this Agreement
+      shall not exceed the total fees paid by the Client to Local Heroes in the three (3) months immediately preceding the claim.
+      In no event shall either party be liable for indirect, incidental, special, consequential, or punitive damages, including
+      lost profits or lost business opportunities.</p>
+
+    <h3>10. Indemnification</h3>
+    <p>The Client agrees to indemnify and hold harmless Local Heroes from any claims, damages, or expenses (including reasonable
+      attorneys' fees) arising from (a) content the Client provides, including any IP infringement or false advertising claim, or
+      (b) the Client's products or services advertised on the postcard.</p>
+
+    <h3>11. Governing Law & Disputes</h3>
+    <p>This Agreement is governed by the laws of the State of Texas, without regard to conflict-of-laws principles.
+      Any dispute arising out of or relating to this Agreement shall be brought exclusively in the state or federal courts
+      located in Harris County, Texas. The parties agree to attempt good-faith resolution before filing suit.</p>
+
+    <h3>12. Entire Agreement</h3>
+    <p>This Agreement constitutes the entire understanding between the parties regarding the subject matter and supersedes all
+      prior discussions or proposals. Any modification must be in writing and signed by both parties. If any provision is held
+      unenforceable, the remainder shall remain in full force and effect.</p>
+
+    <h3>13. Notices</h3>
+    <p>All notices shall be sent by email to the addresses listed above and shall be deemed received upon delivery confirmation.</p>
+
+    <h3>Signatures</h3>
+    <p class="small-print">By signing below, each party represents that the signer is authorized to bind the named party to this Agreement.</p>
+
+    <div class="signature-grid">
+      <div class="sig-block">
+        <div class="sig-line"></div>
+        <div class="sig-meta"><b>Client Signature</b></div>
+        <div class="sig-meta">Printed Name: <span class="field" contenteditable="true" data-key="contact-sign" data-placeholder="Authorized Signer"></span></div>
+        <div class="sig-meta">Title: <span class="field" contenteditable="true" data-key="title-sign" data-placeholder="Title"></span></div>
+        <div class="sig-meta">Date:  <span class="field" contenteditable="true" data-key="date-sign"  data-placeholder="MM/DD/YYYY"></span></div>
+      </div>
+      <div class="sig-block">
+        <div class="sig-line"></div>
+        <div class="sig-meta"><b>Local Heroes EDDM, LLC</b></div>
+        <div class="sig-meta">Printed Name: <span class="field" contenteditable="true" data-key="rep-sign" data-placeholder="Sales Rep"></span></div>
+        <div class="sig-meta">Title: Authorized Representative</div>
+        <div class="sig-meta">Date:  <span class="field" contenteditable="true" data-key="rep-date"  data-placeholder="MM/DD/YYYY"></span></div>
+      </div>
+    </div>
+
+    <p class="small-print" style="margin-top:36px;text-align:center;color:#888;">
+      Local Heroes EDDM, LLC · Houston, TX · localheroes.com · This document was generated on
+      <span id="gen-date"></span>.
+    </p>
+  </div>
+</div>
+
+<script>
+  // Pre-fill from URL params (e.g. ?business=Acme&zipcodes=77002&rate=299&rep=Jane)
+  (function () {
+    const p = new URLSearchParams(location.search);
+    document.querySelectorAll('[data-key]').forEach(el => {
+      const v = p.get(el.dataset.key);
+      if (v) el.textContent = v;
+    });
+
+    // Auto-fill total = rate * numzips when both provided
+    const rate = parseFloat(p.get('rate') || '');
+    const numz = parseInt(p.get('numzips') || '', 10);
+    if (!isNaN(rate) && !isNaN(numz)) {
+      const totalEl = document.querySelector('[data-key="total"]');
+      if (totalEl) totalEl.textContent = (rate * numz).toFixed(0);
+    }
+
+    // Default effective date to today if blank
+    const eff = document.querySelector('[data-key="effective"]');
+    if (eff && !eff.textContent.trim()) {
+      eff.textContent = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+    }
+
+    document.getElementById('gen-date').textContent =
+      new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+  })();
+
+  function copyShareLink() {
+    const params = new URLSearchParams();
+    document.querySelectorAll('[data-key]').forEach(el => {
+      const v = el.textContent.trim();
+      if (v) params.set(el.dataset.key, v);
+    });
+    const url = location.origin + location.pathname + '?' + params.toString();
+    navigator.clipboard.writeText(url)
+      .then(() => alert('Pre-filled contract link copied to clipboard.'))
+      .catch(() => prompt('Copy this link:', url));
+  }
+</script>
+
+</body>
+</html>
