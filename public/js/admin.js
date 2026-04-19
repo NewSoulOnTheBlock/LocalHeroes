@@ -231,6 +231,36 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==================== PIPELINE ====================
+  let _pipelineListenersAttached = false;
+  function attachPipelineDropListeners() {
+    if (_pipelineListenersAttached) return;
+    document.querySelectorAll('.pipeline-cards').forEach(col => {
+      col.addEventListener('dragover', e => { e.preventDefault(); col.style.background = 'rgba(212,168,67,0.1)'; });
+      col.addEventListener('dragleave', () => { col.style.background = ''; });
+      col.addEventListener('drop', async (e) => {
+        e.preventDefault(); col.style.background = '';
+        const id = e.dataTransfer.getData('text/plain');
+        if (!id) return;
+        const newStatus = col.parentElement.dataset.status;
+        // Optimistically remove the dragged card from its old column so it never appears in two places.
+        const dragged = document.querySelector(`.pipeline-card[data-id="${id}"]`);
+        if (dragged && dragged.parentElement !== col) dragged.remove();
+        try {
+          const r = await adminFetch(`/api/crm/contacts/${id}/status`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: newStatus })
+          });
+          if (!r) throw new Error('Update failed');
+        } catch (err) {
+          alert('Could not move lead: ' + (err.message || err));
+        }
+        loadPipeline(); loadCRMDashboard(); loadContacts();
+      });
+    });
+    _pipelineListenersAttached = true;
+  }
+
   window.loadPipeline = async function() {
     const data = await adminFetch('/api/crm/contacts');
     if (!data) return;
@@ -238,7 +268,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const statuses = ['new','contacted','interested','negotiating','signed','not_interested'];
     const groups = {};
     statuses.forEach(s => groups[s] = []);
-    data.forEach(c => { if (groups[c.status]) groups[c.status].push(c); else if (c.status === 'no_answer') groups['contacted'].push(c); });
+    // De-dupe by id in case the API ever returns duplicates from a JOIN.
+    const seen = new Set();
+    data.forEach(c => {
+      if (seen.has(c.id)) return;
+      seen.add(c.id);
+      const s = groups[c.status] ? c.status : (c.status === 'no_answer' ? 'contacted' : null);
+      if (s) groups[s].push(c);
+    });
 
     statuses.forEach(s => {
       document.getElementById('pipe-' + s).innerHTML = groups[s].map(c => `
@@ -254,25 +291,17 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('count-' + s).textContent = groups[s].length;
     });
 
-    // Drop zones
-    document.querySelectorAll('.pipeline-cards').forEach(col => {
-      col.addEventListener('dragover', e => { e.preventDefault(); col.style.background = 'rgba(212,168,67,0.1)'; });
-      col.addEventListener('dragleave', () => { col.style.background = ''; });
-      col.addEventListener('drop', async (e) => {
-        e.preventDefault(); col.style.background = '';
-        const id = e.dataTransfer.getData('text/plain');
-        const newStatus = col.parentElement.dataset.status;
-        const contact = await adminFetch(`/api/crm/contacts/${id}`);
-        if (contact) {
-          await adminFetch(`/api/crm/contacts/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ...contact, status: newStatus, calls: undefined, followups: undefined }) });
-          loadPipeline(); loadCRMDashboard(); loadContacts();
-        }
-      });
-    });
+    attachPipelineDropListeners();
   };
 
-  window.dragStart = function(e) { e.dataTransfer.setData('text/plain', e.target.dataset.id); };
+  window.dragStart = function(e) {
+    // Find the .pipeline-card ancestor in case the drag started on an inner element
+    const card = e.target.closest ? e.target.closest('.pipeline-card') : e.target;
+    if (card && card.dataset && card.dataset.id) {
+      e.dataTransfer.setData('text/plain', card.dataset.id);
+      e.dataTransfer.effectAllowed = 'move';
+    }
+  };
 
   // ==================== DAILY CALL LIST ====================
   window.loadCallList = async function() {

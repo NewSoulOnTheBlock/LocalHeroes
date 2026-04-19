@@ -129,6 +129,22 @@ router.delete('/contacts/:id', async (req, res) => {
   } catch (err) { console.error(err); res.status(500).json({ error: err.message }); }
 });
 
+// Lightweight status-only update for kanban drag-and-drop (avoids round-tripping the whole record)
+router.patch('/contacts/:id/status', async (req, res) => {
+  try {
+    const ALLOWED = new Set(['new','contacted','interested','negotiating','signed','not_interested','no_answer']);
+    const { status } = req.body || {};
+    if (!ALLOWED.has(status)) return res.status(400).json({ error: 'Invalid status' });
+    const existing = (await q('SELECT commission_salesperson_id FROM crm_contacts WHERE id = $1', [req.params.id])).rows[0];
+    if (!existing) return res.status(404).json({ error: 'Contact not found' });
+    if (!isAdmin(req) && existing.commission_salesperson_id && existing.commission_salesperson_id !== req.salesperson.id) {
+      return res.status(403).json({ error: 'This lead is owned by another salesperson' });
+    }
+    await q('UPDATE crm_contacts SET status = $1, updated_at = NOW() WHERE id = $2', [status, req.params.id]);
+    res.json({ success: true, status });
+  } catch (err) { console.error(err); res.status(500).json({ error: err.message }); }
+});
+
 // ==================== CALLS ====================
 // Logging a call claims the commission for this salesperson (first-come-first-serve,
 // permanent once set). Admin calls (no salesperson.id) never claim.
