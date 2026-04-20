@@ -100,6 +100,7 @@
         <button class="admin-tab admin-only" data-tab="commissions" style="display:none;">Commissions</button>
         <button class="admin-tab admin-only" data-tab="referrals" style="display:none;">Referrals</button>
         <button class="admin-tab" data-tab="heroes">Heroes Blog</button>
+        <button class="admin-tab" data-tab="closing">Closing Kit</button>
       </div>
 
       <!-- CRM Dashboard Tab -->
@@ -738,6 +739,146 @@
           <div id="heroes-comments-list"></div>
         </div>
       </div>
+
+      <!-- ============== CLOSING KIT TAB ============== -->
+      <div id="tab-closing" class="admin-tab-content" style="display:none;">
+        <h2 style="margin-bottom:8px;">🎯 Closing Kit — From "Yes" to Signed</h2>
+        <p style="color:#666;margin-bottom:20px;">Everything you need to take a verbal "yes" all the way to a paying, onboarded Local Hero. Use this checklist with every new sign-up.</p>
+
+        <!-- Quick lead picker -->
+        <div style="background:#fff;border:1px solid var(--color-border);border-radius:10px;padding:18px;margin-bottom:20px;">
+          <label style="font-weight:600;color:var(--color-navy);">Working a specific lead?</label>
+          <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center;">
+            <select id="closing-contact-select" style="padding:8px;border:1px solid var(--color-border);border-radius:6px;min-width:280px;flex:1;max-width:420px;">
+              <option value="">— Pick a lead from your CRM —</option>
+            </select>
+            <button class="btn btn-secondary" onclick="loadClosingContacts()">↻ Refresh</button>
+          </div>
+          <p style="font-size:.8rem;color:#888;margin-top:8px;">Pick a lead and the buttons below will pre-fill with their info.</p>
+        </div>
+
+        <!-- Step-by-step closing checklist -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px;">
+
+          <div class="closing-step-card">
+            <div class="closing-step-number">1</div>
+            <h3>📄 Send the Contract</h3>
+            <p>Generate a fillable Advertising Services Agreement. Pre-fills with your selected lead. Print, sign in person, or email the PDF.</p>
+            <div class="closing-step-actions">
+              <button class="btn btn-primary" onclick="closingContract()">Open Contract</button>
+              <button class="btn btn-secondary" onclick="closingContractLink()">Copy Sharable Link</button>
+            </div>
+            <ul class="closing-tips">
+              <li>Read aloud the cancellation, rate, and proof-approval clauses</li>
+              <li>Initial each ZIP code being purchased</li>
+              <li>Get the signed PDF back before sending the invoice</li>
+            </ul>
+          </div>
+
+          <div class="closing-step-card">
+            <div class="closing-step-number">2</div>
+            <h3>💳 Collect Payment / Send Invoice</h3>
+            <p>Send the first invoice or take a card on the spot. Use the methods below.</p>
+            <div class="closing-step-actions">
+              <button class="btn btn-primary" onclick="closingInvoice()">Open Invoice Generator</button>
+              <button class="btn btn-secondary" onclick="copyPaymentLinks()">Copy Payment Links</button>
+            </div>
+            <ul class="closing-tips">
+              <li>Default rate: $299/month per ZIP code</li>
+              <li>Charge the first month upfront (no setup fee unless agreed)</li>
+              <li>Card-on-file authorization included in the contract</li>
+              <li>For ACH/check, mark "Net 7" on the invoice</li>
+            </ul>
+          </div>
+
+          <div class="closing-step-card">
+            <div class="closing-step-number">3</div>
+            <h3>📥 Collect Creative Assets</h3>
+            <p>You need everything below before design can start. Send the asset request email below.</p>
+            <div class="closing-step-actions">
+              <button class="btn btn-primary" onclick="copyAssetRequest()">Copy Asset Request Email</button>
+            </div>
+            <ul class="closing-tips">
+              <li>High-resolution logo (PNG with transparent background or SVG)</li>
+              <li>2–4 photos of the business, product, or owner</li>
+              <li>Tagline / 1-sentence pitch</li>
+              <li>Website, phone, address, hours</li>
+              <li>Any promotional offer for the postcard ("$10 off first visit", etc.)</li>
+            </ul>
+          </div>
+
+          <div class="closing-step-card">
+            <div class="closing-step-number">4</div>
+            <h3>🚚 Update CRM & Pipeline</h3>
+            <p>Move the contact to the <b>Signed</b> stage in your pipeline so production sees them and you get commission credit.</p>
+            <div class="closing-step-actions">
+              <button class="btn btn-primary" onclick="goToPipeline()">Open Pipeline</button>
+              <button class="btn btn-secondary" onclick="goToContacts()">Open Contacts</button>
+            </div>
+            <ul class="closing-tips">
+              <li>Drag the lead's card to the <b>Signed</b> column</li>
+              <li>Log a note with the contract number, ZIP(s), and start month</li>
+              <li>Set a follow-up to check in 7 days after the first mailing</li>
+            </ul>
+          </div>
+
+          <div class="closing-step-card">
+            <div class="closing-step-number">5</div>
+            <h3>🌟 Send the Welcome Email</h3>
+            <p>Use the built-in "Post-Sign Welcome" email template — it sets expectations and drops them into the proof-approval workflow.</p>
+            <div class="closing-step-actions">
+              <button class="btn btn-primary" onclick="sendWelcomeEmail()">Send Welcome Email</button>
+            </div>
+            <ul class="closing-tips">
+              <li>Confirms they're locked in for the next mailing cycle</li>
+              <li>Tells them when to expect the design proof</li>
+              <li>Reminds them of the proof-approval window (3 business days)</li>
+            </ul>
+          </div>
+
+          <div class="closing-step-card">
+            <div class="closing-step-number">6</div>
+            <h3>📅 Confirm First Mailing Cycle</h3>
+            <p>Confirm with operations which monthly cycle they'll be on, and lock that in writing with the customer.</p>
+            <ul class="closing-tips">
+              <li>Cycle cutoff: typically the 15th of the prior month</li>
+              <li>If signed after the 15th → first mailing is the cycle <i>after</i> the next one</li>
+              <li>Email the customer the exact mailing date once known</li>
+            </ul>
+          </div>
+
+          <div class="closing-step-card">
+            <div class="closing-step-number">7</div>
+            <h3>📰 Bonus: Hero Spotlight</h3>
+            <p>Offer to feature them on the LocalHeroes.com blog. It's free and dramatically increases retention.</p>
+            <div class="closing-step-actions">
+              <button class="btn btn-primary" onclick="goToHeroes()">Open Heroes Blog</button>
+            </div>
+            <ul class="closing-tips">
+              <li>Use the 25-question Interview Kit (in the Heroes Blog tab)</li>
+              <li>Schedule the spotlight to publish the same week as their first mailing</li>
+            </ul>
+          </div>
+
+        </div>
+
+        <!-- Reference card -->
+        <div style="margin-top:28px;background:#fff;border-left:4px solid var(--color-gold);border-radius:8px;padding:18px 22px;">
+          <h3 style="margin:0 0 10px;color:var(--color-navy);">📌 Quick Reference</h3>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;font-size:.92rem;">
+            <div><b>Standard Rate:</b><br>$299/month per ZIP</div>
+            <div><b>Mailing Cadence:</b><br>1× per calendar month</div>
+            <div><b>Cycle Cutoff:</b><br>15th of prior month</div>
+            <div><b>Cancellation:</b><br>10 days before billing</div>
+            <div><b>Refund Window:</b><br>None once printing has begun</div>
+            <div><b>Setup Fee:</b><br>None (unless agreed)</div>
+            <div><b>Proof Window:</b><br>3 business days for client approval</div>
+            <div><b>Support:</b><br>hello@localheroes.com · (713) 555-0000</div>
+          </div>
+        </div>
+      </div>
+      <!-- END CLOSING KIT TAB -->
+
     </div>
   </div>
 

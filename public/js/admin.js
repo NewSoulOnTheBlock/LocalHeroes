@@ -96,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (tab.dataset.tab === 'commissions') loadCommissions();
       if (tab.dataset.tab === 'referrals') loadReferralsAdmin();
       if (tab.dataset.tab === 'heroes' && typeof loadHeroPosts === 'function') { loadHeroPosts(); loadHeroComments(); }
+      if (tab.dataset.tab === 'closing') loadClosingContacts();
     });
   });
 
@@ -844,4 +845,138 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function esc(str) { if (!str) return ''; const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
+
+  // ==================== CLOSING KIT ====================
+  let closingSelectedContact = null;
+
+  window.loadClosingContacts = async function() {
+    const sel = document.getElementById('closing-contact-select');
+    if (!sel) return;
+    const contacts = await adminFetch('/api/crm/contacts');
+    if (!contacts) return;
+    sel.innerHTML = '<option value="">— Pick a lead from your CRM —</option>' +
+      contacts.map(c => `<option value="${c.id}">${esc(c.business_name || '(no name)')} — ${esc(c.contact_name || '')}</option>`).join('');
+    sel.onchange = async () => {
+      closingSelectedContact = sel.value ? await adminFetch('/api/crm/contacts/' + sel.value) : null;
+    };
+  };
+
+  function closingParams(extra) {
+    const p = new URLSearchParams();
+    const c = closingSelectedContact;
+    if (c) {
+      if (c.business_name) p.set('business', c.business_name);
+      if (c.contact_name)  p.set('contact',  c.contact_name);
+      if (c.email)         p.set('email',    c.email);
+      if (c.phone)         p.set('phone',    c.phone);
+      if (c.address)       p.set('address',  c.address);
+      if (c.zipcode)       p.set('zipcodes', c.zipcode);
+    }
+    if (currentUser && currentUser.full_name) p.set('rep', currentUser.full_name);
+    if (currentUser && currentUser.id)        p.set('repid', String(currentUser.id));
+    p.set('rate', '299'); p.set('numzips', '1'); p.set('total', '299');
+    Object.entries(extra || {}).forEach(([k, v]) => p.set(k, v));
+    return p;
+  }
+
+  window.closingContract = function() {
+    window.open('contract.html?' + closingParams().toString(), '_blank');
+  };
+
+  window.closingContractLink = function() {
+    const url = location.origin.replace(/\/$/, '') + '/contract.html?' + closingParams().toString();
+    navigator.clipboard.writeText(url)
+      .then(() => alert('Pre-filled contract link copied. Send it to the client.'))
+      .catch(() => prompt('Copy this link:', url));
+  };
+
+  window.closingInvoice = function() {
+    const month = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+    window.open('invoice.html?' + closingParams({ month }).toString(), '_blank');
+  };
+
+  window.copyPaymentLinks = function() {
+    const c = closingSelectedContact;
+    const businessLabel = c && c.business_name ? c.business_name : '[Business Name]';
+    const text =
+`Hi ${(c && c.contact_name) || '[Name]'},
+
+Here are the ways you can pay your Local Heroes invoice for ${businessLabel}:
+
+💳 Card on File (auto-charge each month) — already authorized in your signed agreement.
+🏦 ACH or Check — payable to "Local Heroes EDDM, LLC", mailed to our Houston address.
+🔗 Online Payment Link — https://pay.localheroes.com/  (replace with your processor link)
+
+Reference your invoice number on any check or ACH transfer. Questions? hello@localheroes.com or (713) 555-0000.
+
+— ${(currentUser && currentUser.full_name) || 'Local Heroes'}`;
+    navigator.clipboard.writeText(text)
+      .then(() => alert('Payment instructions copied to clipboard.'))
+      .catch(() => prompt('Copy this:', text));
+  };
+
+  window.copyAssetRequest = function() {
+    const c = closingSelectedContact;
+    const biz = (c && c.business_name) || '[Business Name]';
+    const name = (c && c.contact_name) || '[Owner Name]';
+    const text =
+`Subject: Welcome to Local Heroes — assets we need to start your design 🎨
+
+Hi ${name},
+
+Thrilled to have ${biz} on board! To get your postcard designed and into the next mailing cycle, I need a few quick things from you.
+
+Please reply with the following:
+
+  1. High-resolution logo (PNG with transparent background, or SVG)
+  2. 2–4 photos of your business — your space, your product, you/your team
+  3. Your tagline or one-sentence pitch ("We're the…" or "We help…")
+  4. Website, phone, address, and hours
+  5. (Optional) Any promotional offer to feature ("$10 off first visit", "Free consultation", etc.)
+
+You can email everything back to me, or upload via your favorite file-sharing tool — Dropbox, Google Drive, WeTransfer all work.
+
+Once I have these, our design team will turn around your first proof within 5 business days.
+
+Thanks!
+— ${(currentUser && currentUser.full_name) || 'Local Heroes'}
+${(currentUser && currentUser.email) || 'hello@localheroes.com'}`;
+    navigator.clipboard.writeText(text)
+      .then(() => alert('Asset request email copied. Paste into your mail client.'))
+      .catch(() => prompt('Copy this email:', text));
+  };
+
+  window.goToPipeline = function() {
+    const btn = document.querySelector('.admin-tab[data-tab="crm-pipeline"]');
+    if (btn) btn.click();
+  };
+
+  window.goToContacts = function() {
+    const btn = document.querySelector('.admin-tab[data-tab="crm-contacts"]');
+    if (btn) btn.click();
+  };
+
+  window.goToHeroes = function() {
+    const btn = document.querySelector('.admin-tab[data-tab="heroes"]');
+    if (btn) btn.click();
+  };
+
+  window.sendWelcomeEmail = async function() {
+    const c = closingSelectedContact;
+    if (!c) {
+      alert('Pick a lead first, then click Send Welcome Email.');
+      return;
+    }
+    const btn = document.querySelector('.admin-tab[data-tab="crm-emails"]');
+    if (btn) btn.click();
+    setTimeout(() => {
+      const sel = document.getElementById('email-contact-select');
+      if (sel) { sel.value = c.id; sel.dispatchEvent(new Event('change')); }
+      const tplSel = document.getElementById('email-template-select');
+      if (tplSel) {
+        const opt = Array.from(tplSel.options).find(o => /welcome/i.test(o.textContent));
+        if (opt) { tplSel.value = opt.value; tplSel.dispatchEvent(new Event('change')); }
+      }
+    }, 200);
+  };
 });

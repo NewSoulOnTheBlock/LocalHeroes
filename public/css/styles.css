@@ -1375,3 +1375,37 @@ img { max-width: 100%; height: auto; }
   .section { padding: 48px 0; }
   .stats-bar { grid-template-columns: 1fr; }
 }
+
+/* ==================== Closing Kit ==================== */
+.closing-step-card {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 22px 22px 18px;
+  position: relative;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  transition: box-shadow .15s ease;
+}
+.closing-step-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
+.closing-step-card h3 {
+  font-family: var(--font-heading);
+  color: var(--color-navy);
+  font-size: 1.2rem;
+  margin: 4px 0 8px;
+}
+.closing-step-card p { color: #555; font-size: .92rem; margin: 4px 0 12px; }
+.closing-step-number {
+  position: absolute; top: -14px; left: 18px;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--color-navy); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-heading); font-weight: 700; font-size: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+.closing-step-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.closing-step-actions .btn { font-size: .82rem; padding: 7px 14px; }
+.closing-tips {
+  margin: 10px 0 0; padding-left: 18px;
+  font-size: .85rem; color: #666; line-height: 1.5;
+}
+.closing-tips li { margin-bottom: 3px; }

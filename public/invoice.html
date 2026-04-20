@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Local Heroes — Invoice</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body { background: #f3eee6; }
+    .inv-shell { max-width: 880px; margin: 24px auto; padding: 0 16px; }
+    .inv-toolbar {
+      background: var(--color-navy); color: #fff; padding: 14px 20px; border-radius: 10px 10px 0 0;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+    }
+    .inv-toolbar h1 { color: #fff; margin: 0; font-size: 1.25rem; }
+    .inv-toolbar .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .inv-toolbar button {
+      background: #fff; color: var(--color-navy); border: 0; padding: 8px 14px;
+      border-radius: 6px; font-weight: 600; cursor: pointer; font-family: inherit;
+    }
+    .inv-toolbar button:hover { background: var(--color-gold); }
+
+    .invoice {
+      background: #fff; padding: 48px 56px; border-radius: 0 0 10px 10px;
+      box-shadow: 0 6px 24px rgba(0,0,0,.08); color: #222; line-height: 1.5;
+      font-family: var(--font-body);
+    }
+    .inv-head { display: grid; grid-template-columns: 1fr auto; gap: 24px; padding-bottom: 24px; border-bottom: 2px solid var(--color-navy); }
+    .inv-head .brand { font-family: var(--font-heading); color: var(--color-navy); font-size: 2rem; line-height: 1; }
+    .inv-head .sub { color: #777; margin-top: 4px; font-size: .9rem; }
+    .inv-meta { text-align: right; }
+    .inv-meta h2 { font-family: var(--font-heading); color: var(--color-navy); margin: 0 0 6px; font-size: 1.6rem; letter-spacing: 1px; }
+    .inv-meta .row { font-size: .92rem; margin: 3px 0; color: #444; }
+
+    .field { display: inline-block; min-width: 110px; border-bottom: 1px dashed #aaa; padding: 0 4px; font-weight: 600; color: var(--color-navy); }
+    .field[contenteditable="true"]:empty::before { content: attr(data-placeholder); color: #aaa; font-weight: 400; }
+    .field[contenteditable="true"]:focus { outline: none; background: #fffbe6; }
+
+    .inv-block { margin: 24px 0; }
+    .inv-block h4 { font-family: var(--font-heading); color: var(--color-navy); margin: 0 0 6px; }
+    .bill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+    .bill-card { padding: 14px 16px; background: #faf7f1; border-left: 3px solid var(--color-gold); border-radius: 4px; font-size: .92rem; }
+    .bill-card .row { margin: 3px 0; }
+
+    table.line-items { width: 100%; border-collapse: collapse; margin-top: 14px; }
+    .line-items th { text-align: left; background: var(--color-navy); color: #fff; padding: 10px 12px; font-family: var(--font-heading); font-weight: 600; font-size: .9rem; }
+    .line-items td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: top; }
+    .line-items input, .line-items .field { width: 100%; box-sizing: border-box; }
+    .line-items .qty input, .line-items .price input { width: 80px; }
+    .line-items .right { text-align: right; }
+
+    .totals { margin-top: 18px; margin-left: auto; max-width: 320px; }
+    .totals .row { display: flex; justify-content: space-between; padding: 6px 0; }
+    .totals .row.total { border-top: 2px solid var(--color-navy); font-weight: 700; font-size: 1.15rem; color: var(--color-navy); padding-top: 10px; margin-top: 6px; }
+
+    .pay-info { margin-top: 28px; background: #faf7f1; border-radius: 8px; padding: 16px 20px; }
+    .pay-info h4 { font-family: var(--font-heading); color: var(--color-navy); margin: 0 0 8px; }
+    .pay-info p { margin: 4px 0; font-size: .92rem; }
+
+    .footer-note { margin-top: 28px; text-align: center; font-size: .85rem; color: #888; }
+
+    @media print {
+      body { background: #fff; }
+      .inv-toolbar, .no-print { display: none !important; }
+      .invoice { box-shadow: none; padding: 24px 32px; border-radius: 0; }
+      .field { border: 0; color: #000; }
+    }
+    @page { size: letter; margin: 0.6in; }
+
+    input[type="text"], input[type="number"] {
+      border: 1px solid #ddd; padding: 6px 8px; border-radius: 4px;
+      font-family: inherit; font-size: .92rem;
+    }
+    input:focus { outline: 2px solid var(--color-gold); outline-offset: -1px; }
+  </style>
+</head>
+<body>
+
+<div class="inv-shell">
+  <div class="inv-toolbar no-print">
+    <h1>🧾 Invoice Generator</h1>
+    <div class="actions">
+      <button onclick="recalcTotals()">↻ Recalc</button>
+      <button onclick="window.print()">🖨️ Print / Save PDF</button>
+      <button onclick="copyShareLink()">🔗 Copy Pre-filled Link</button>
+      <button onclick="window.close()">Close</button>
+    </div>
+  </div>
+
+  <div class="invoice" id="invoice">
+    <div class="inv-head">
+      <div>
+        <div class="brand">LOCAL HEROES</div>
+        <div class="sub">Local Heroes EDDM, LLC · Houston, TX<br>hello@localheroes.com · (713) 555-0000</div>
+      </div>
+      <div class="inv-meta">
+        <h2>INVOICE</h2>
+        <div class="row">Invoice #: <span class="field" contenteditable="true" data-key="invoice" data-placeholder="LH-0001"></span></div>
+        <div class="row">Date: <span class="field" contenteditable="true" data-key="date" data-placeholder="MM/DD/YYYY"></span></div>
+        <div class="row">Due: <span class="field" contenteditable="true" data-key="due" data-placeholder="On receipt"></span></div>
+        <div class="row">Rep: <span class="field" contenteditable="true" data-key="rep" data-placeholder="Sales Rep"></span></div>
+      </div>
+    </div>
+
+    <div class="inv-block bill-grid">
+      <div class="bill-card">
+        <h4>Bill To</h4>
+        <div class="row">Business: <span class="field" contenteditable="true" data-key="business" data-placeholder="Business Name"></span></div>
+        <div class="row">Contact: <span class="field" contenteditable="true" data-key="contact" data-placeholder="Owner Name"></span></div>
+        <div class="row">Email: <span class="field" contenteditable="true" data-key="email" data-placeholder="email@business.com"></span></div>
+        <div class="row">Phone: <span class="field" contenteditable="true" data-key="phone" data-placeholder="(xxx) xxx-xxxx"></span></div>
+        <div class="row">Address: <span class="field" contenteditable="true" data-key="address" data-placeholder="Street, City, TX, ZIP"></span></div>
+      </div>
+      <div class="bill-card">
+        <h4>Service Period</h4>
+        <div class="row">Mailing Month: <span class="field" contenteditable="true" data-key="month" data-placeholder="Month YYYY"></span></div>
+        <div class="row">ZIP Code(s): <span class="field" contenteditable="true" data-key="zipcodes" data-placeholder="77002, 77003"></span></div>
+        <div class="row">Cycle: <span class="field" contenteditable="true" data-key="cycle" data-placeholder="Monthly recurring"></span></div>
+      </div>
+    </div>
+
+    <div class="inv-block">
+      <h4>Services</h4>
+      <table class="line-items" id="line-items">
+        <thead>
+          <tr>
+            <th style="width:55%;">Description</th>
+            <th class="qty" style="width:12%;">Qty</th>
+            <th class="price" style="width:18%;">Rate</th>
+            <th class="right" style="width:15%;">Amount</th>
+          </tr>
+        </thead>
+        <tbody id="line-body">
+          <!-- rows injected -->
+        </tbody>
+      </table>
+      <button class="no-print" onclick="addLine()" style="margin-top:8px;background:transparent;border:1px dashed #aaa;color:#555;padding:6px 12px;border-radius:6px;cursor:pointer;">+ Add Line</button>
+    </div>
+
+    <div class="totals">
+      <div class="row"><span>Subtotal</span><span id="t-sub">$0.00</span></div>
+      <div class="row"><span>Discount <span class="no-print" style="color:#888;font-size:.8rem;">(<input type="number" id="t-disc" value="0" min="0" style="width:60px;padding:2px 6px;font-size:.85rem;" oninput="recalcTotals()">%)</span></span><span id="t-disc-amt">$0.00</span></div>
+      <div class="row"><span>Tax <span class="no-print" style="color:#888;font-size:.8rem;">(<input type="number" id="t-tax" value="0" min="0" step="0.01" style="width:60px;padding:2px 6px;font-size:.85rem;" oninput="recalcTotals()">%)</span></span><span id="t-tax-amt">$0.00</span></div>
+      <div class="row total"><span>Total Due</span><span id="t-total">$0.00</span></div>
+    </div>
+
+    <div class="pay-info">
+      <h4>Payment Methods</h4>
+      <p>💳 <b>Card on File</b> — auto-charged on the date above per your signed services agreement.</p>
+      <p>🏦 <b>ACH / Check</b> — payable to <b>Local Heroes EDDM, LLC</b>, mailed to the address above. Reference your invoice number.</p>
+      <p>🔗 <b>Online Payment</b> — <span class="field" contenteditable="true" data-key="paylink" data-placeholder="https://pay.localheroes.com/...">https://pay.localheroes.com/</span></p>
+      <p style="font-size:.85rem;color:#777;margin-top:10px;">Late payment may delay or skip your next mailing cycle. Contact hello@localheroes.com with any billing questions.</p>
+    </div>
+
+    <div class="footer-note">Thank you for being a Local Hero. ⭐</div>
+  </div>
+</div>
+
+<script>
+  const DEFAULT_LINES = [
+    { desc: 'EDDM Postcard Placement — monthly', qty: 1, price: 299 }
+  ];
+
+  function addLine(line) {
+    const tbody = document.getElementById('line-body');
+    const l = line || { desc: '', qty: 1, price: 0 };
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="text" class="li-desc" value="${(l.desc || '').replace(/"/g, '&quot;')}" placeholder="Description"></td>
+      <td class="qty"><input type="number" class="li-qty" value="${l.qty}" min="0" step="1" oninput="recalcTotals()"></td>
+      <td class="price"><input type="number" class="li-price" value="${l.price}" min="0" step="0.01" oninput="recalcTotals()"></td>
+      <td class="right li-amt">$0.00</td>
+    `;
+    tbody.appendChild(tr);
+    recalcTotals();
+  }
+
+  function recalcTotals() {
+    let sub = 0;
+    document.querySelectorAll('#line-body tr').forEach(tr => {
+      const q = parseFloat(tr.querySelector('.li-qty').value) || 0;
+      const p = parseFloat(tr.querySelector('.li-price').value) || 0;
+      const amt = q * p;
+      tr.querySelector('.li-amt').textContent = '$' + amt.toFixed(2);
+      sub += amt;
+    });
+    const discPct = parseFloat(document.getElementById('t-disc').value) || 0;
+    const taxPct  = parseFloat(document.getElementById('t-tax').value)  || 0;
+    const discAmt = sub * (discPct / 100);
+    const taxAmt  = (sub - discAmt) * (taxPct / 100);
+    const total = sub - discAmt + taxAmt;
+    document.getElementById('t-sub').textContent = '$' + sub.toFixed(2);
+    document.getElementById('t-disc-amt').textContent = '-$' + discAmt.toFixed(2);
+    document.getElementById('t-tax-amt').textContent = '$' + taxAmt.toFixed(2);
+    document.getElementById('t-total').textContent = '$' + total.toFixed(2);
+  }
+
+  // URL prefill
+  (function init() {
+    const p = new URLSearchParams(location.search);
+    document.querySelectorAll('[data-key]').forEach(el => {
+      const v = p.get(el.dataset.key);
+      if (v) el.textContent = v;
+    });
+    if (!document.querySelector('[data-key="date"]').textContent.trim()) {
+      document.querySelector('[data-key="date"]').textContent =
+        new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+    }
+    if (!document.querySelector('[data-key="invoice"]').textContent.trim()) {
+      document.querySelector('[data-key="invoice"]').textContent =
+        'LH-' + Date.now().toString().slice(-6);
+    }
+    // Custom rate / qty from URL
+    const rate = parseFloat(p.get('rate'));
+    const numz = parseInt(p.get('numzips'), 10) || 1;
+    if (!isNaN(rate)) DEFAULT_LINES[0] = { desc: 'EDDM Postcard Placement — monthly', qty: numz, price: rate };
+    DEFAULT_LINES.forEach(addLine);
+  })();
+
+  function copyShareLink() {
+    const params = new URLSearchParams();
+    document.querySelectorAll('[data-key]').forEach(el => {
+      const v = el.textContent.trim();
+      if (v) params.set(el.dataset.key, v);
+    });
+    const url = location.origin + location.pathname + '?' + params.toString();
+    navigator.clipboard.writeText(url)
+      .then(() => alert('Pre-filled invoice link copied.'))
+      .catch(() => prompt('Copy this link:', url));
+  }
+</script>
+
+</body>
+</html>
