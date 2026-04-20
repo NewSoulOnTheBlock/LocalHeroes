@@ -901,13 +901,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const text =
 `Hi ${(c && c.contact_name) || '[Name]'},
 
-Here are the ways you can pay your Local Heroes invoice for ${businessLabel}:
+Here is the payment information for your Local Heroes invoice for ${businessLabel}.
 
-💳 Card on File (auto-charge each month) — already authorized in your signed agreement.
-🏦 ACH or Check — payable to "Local Heroes EDDM, LLC", mailed to our Houston address.
-🔗 Online Payment Link — https://pay.localheroes.com/  (replace with your processor link)
+Please pay by ACH transfer or wire to the account below, and reference your invoice number on the transfer.
 
-Reference your invoice number on any check or ACH transfer. Questions? hello@localheroes.com or (713) 555-0000.
+  Beneficiary:      Kelby Dishman
+  Account #:        217129617814
+  ACH Routing #:    101019644
+  Wire Routing #:   101019644
+
+Questions? hello@localheroes.com or (713) 555-0000.
 
 — ${(currentUser && currentUser.full_name) || 'Local Heroes'}`;
     navigator.clipboard.writeText(text)
