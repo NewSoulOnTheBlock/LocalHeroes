@@ -910,7 +910,7 @@ Please pay by ACH transfer or wire to the account below, and reference your invo
   ACH Routing #:    101019644
   Wire Routing #:   101019644
 
-Questions? hello@localheroes.com or (713) 555-0000.
+Questions? hello@localheroesmonthly.xyz or (713) 555-0000.
 
 — ${(currentUser && currentUser.full_name) || 'Local Heroes'}`;
     navigator.clipboard.writeText(text)
@@ -943,7 +943,7 @@ Once I have these, our design team will turn around your first proof within 5 bu
 
 Thanks!
 — ${(currentUser && currentUser.full_name) || 'Local Heroes'}
-${(currentUser && currentUser.email) || 'hello@localheroes.com'}`;
+${(currentUser && currentUser.email) || 'hello@localheroesmonthly.xyz'}`;
     navigator.clipboard.writeText(text)
       .then(() => alert('Asset request email copied. Paste into your mail client.'))
       .catch(() => prompt('Copy this email:', text));

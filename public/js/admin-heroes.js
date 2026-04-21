@@ -194,7 +194,7 @@
 
 Hi [Owner Name],
 
-We'd like to write a Hero Spotlight feature about [Business Name] for LocalHeroes.com — a free way to share your story with thousands of households in your neighborhood.
+We'd like to write a Hero Spotlight feature about [Business Name] for LocalHeroesMonthly.xyz — a free way to share your story with thousands of households in your neighborhood.
 
 We'll handle the writing and publishing. All we need from you is some answers to the questions below — reply by email, or schedule a 30-minute call and we'll do the interview live.
 
